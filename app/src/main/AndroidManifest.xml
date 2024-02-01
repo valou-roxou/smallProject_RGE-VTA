@@ -16,6 +16,13 @@
             android:name=".RestaurantActivity"
             android:exported="false"
             android:label="@string/title_activity_consult_restaurant"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.SmallProject_RGEVTA" />
+        <activity
+            android:name=".Playground"
+            android:exported="false"
+            android:label="Playground"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity
             android:name=".MainActivity"
