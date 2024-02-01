@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1052094254224",
+    "project_id": "smallproject-rge-vta",
+    "storage_bucket": "smallproject-rge-vta.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052094254224:android:2dbdfb8fd5cb6c28d95c15",
+        "android_client_info": {
+          "package_name": "com.example.smallproject_rge_vta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2MXiNwl4L7kt8xUNEY5InK_vz-6a1Vpg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
