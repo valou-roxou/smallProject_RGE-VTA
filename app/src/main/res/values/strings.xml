@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Uber Hits</string>
     <string name="title_activity_consult_restaurant">ConsultRestaurant</string>
+    <string name="playground">Playground</string>
+    <string name="composant">Composant</string>
+
 </resources>
