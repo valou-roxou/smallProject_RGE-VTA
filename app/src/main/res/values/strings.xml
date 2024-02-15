@@ -4,4 +4,8 @@
     <string name="playground">Playground</string>
     <string name="composant">Composant</string>
 
+    <!-- RESTAURANT -->
+    <string name="reservation_nbConvives">Nombre de convives</string>
+    <string name="reservation_date">Date de la réservation</string>
+
 </resources>

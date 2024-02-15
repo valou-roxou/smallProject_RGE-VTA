@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_playground) {
-            startActivity(new Intent(this, Playground.class));
+            startActivity(new Intent(this, PlaygroundActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
