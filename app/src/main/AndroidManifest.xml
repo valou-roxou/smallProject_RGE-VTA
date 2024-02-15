@@ -25,6 +25,12 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity
+            android:name=".PlaygroundLogoActivity"
+            android:exported="false"
+            android:label=""
+            android:parentActivityName=".Playground"
+            android:theme="@style/Theme.SmallProject_RGEVTA" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
