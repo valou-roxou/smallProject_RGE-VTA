@@ -40,7 +40,7 @@ public class RestaurantActivity extends AppCompatActivity {
                 .add(R.id.restaurant_fragment_container, new ReservationFragment()).commit();
     }
 
-    private TabLayout.OnTabSelectedListener tabListener = new TabLayout.OnTabSelectedListener() {
+    private final TabLayout.OnTabSelectedListener tabListener = new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()){
