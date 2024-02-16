@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.example.smallproject_rge_vta.fragments.ReservationFragment;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 public class RestaurantActivity extends AppCompatActivity {
@@ -25,19 +24,23 @@ public class RestaurantActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant);
 
-        fragmentContainerView = findViewById(R.id.fragment_container);
+        fragmentContainerView = findViewById(R.id.restaurant_fragment_container);
 
         tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.addOnTabSelectedListener(tabListener());
+        tabLayout.addOnTabSelectedListener(tabListener);
+
+        // TODO: Implémenter le comportement des ongles "Menu" et "Avis"
+        tabLayout.getTabAt(0).view.setClickable(false);
+        tabLayout.getTabAt(1).view.setClickable(false);
+        tabLayout.getTabAt(2).select();
     }
 
     public void startFragementReservation(View view) {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, new ReservationFragment()).commit();
+                .add(R.id.restaurant_fragment_container, new ReservationFragment()).commit();
     }
 
-    private TabLayout.OnTabSelectedListener tabListener() {
-        return new TabLayout.OnTabSelectedListener() {
+    private TabLayout.OnTabSelectedListener tabListener = new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()){
@@ -63,6 +66,4 @@ public class RestaurantActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         };
-    }
-
 }

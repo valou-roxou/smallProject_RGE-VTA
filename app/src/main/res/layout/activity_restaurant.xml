@@ -55,23 +55,23 @@
             android:id="@+id/menu_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Menu" />
+            android:text="@string/tab_menu" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/feedback_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Avis" />
+            android:text="@string/tab_feedback" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/reservation_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reservation" />
+            android:text="@string/tab_reservation" />
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_container"
+        android:id="@+id/restaurant_fragment_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

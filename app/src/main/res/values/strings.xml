@@ -8,4 +8,12 @@
     <string name="reservation_nbConvives">Nombre de convives</string>
     <string name="reservation_date">Date de la réservation</string>
 
+    <!-- TAB RESTAURANT -->
+    <string name="tab_menu">Menu</string>
+    <string name="tab_feedback">Avis</string>
+    <string name="tab_reservation">Réservation</string>
+    
+    <!-- FRAGMENT RESERVATION --> 
+    <string name="reservation_book">Réserver</string>
+
 </resources>
