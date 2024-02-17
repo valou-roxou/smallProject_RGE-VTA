@@ -28,7 +28,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantVi
     @Override
     public RestaurantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // On applique le layout à la cardView
-        View recyclerViewItem = mLayoutInflater.inflate(R.layout.recyclerview_item_layout, parent, false);
+        View recyclerViewItem = mLayoutInflater.inflate(R.layout.custom_recyclerview_item, parent, false);
 
         recyclerViewItem.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), RestaurantActivity.class);

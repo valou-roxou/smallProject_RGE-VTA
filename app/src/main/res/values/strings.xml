@@ -4,4 +4,9 @@
     <string name="playground">Playground</string>
     <string name="composant">Composant</string>
 
+    <!-- SLIDESHOW -->
+    <string name="slideshow_button">Slideshow</string>
+    <string name="slideshow_left_button">&lt;</string>
+    <string name="slideshow_right_button">&gt;</string>
+
 </resources>
