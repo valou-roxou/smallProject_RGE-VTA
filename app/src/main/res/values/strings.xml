@@ -21,4 +21,10 @@
     <!-- FRAGMENT RESERVATION -->
     <string name="reservation_book">Réserver</string>
 
+    <!-- FRAGMENT FEEDBACK -->
+    <string name="feedback_comment">Commentaire</string>
+    <string name="feedback_pictures">Photo(s)</string>
+    <string name="feedback_save">Enregistrer</string>
+    <string name="feedback_take_picture">Prendre une photo</string>
+
 </resources>

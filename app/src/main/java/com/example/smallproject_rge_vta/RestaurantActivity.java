@@ -5,6 +5,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.smallproject_rge_vta.fragments.FeedbackFragment;
 import com.example.smallproject_rge_vta.fragments.SlideshowFragment;
 
 import androidx.fragment.app.FragmentContainerView;
@@ -33,7 +34,6 @@ public class RestaurantActivity extends AppCompatActivity {
 
         // TODO: Implémenter le comportement des ongles "Menu" et "Avis"
         tabLayout.getTabAt(0).view.setClickable(false);
-        tabLayout.getTabAt(1).view.setClickable(false);
         tabLayout.getTabAt(2).select();
 
         // Slideshow
@@ -41,13 +41,18 @@ public class RestaurantActivity extends AppCompatActivity {
         bundle.putInt("id_restaurant", 0);
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
-                .add(R.id.restaurant_slideshow_fragment_container, SlideshowFragment.class, bundle).commit();
+                .replace(R.id.restaurant_slideshow_fragment_container, SlideshowFragment.class, bundle).commit();
 
     }
 
     public void startFragementReservation(View view) {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.restaurant_fragment_container, new ReservationFragment()).commit();
+                .replace(R.id.restaurant_fragment_container, new ReservationFragment()).commit();
+    }
+
+    public void startFragementFeedback(View view) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.restaurant_fragment_container, new FeedbackFragment()).commit();
     }
 
     private final TabLayout.OnTabSelectedListener tabListener = new TabLayout.OnTabSelectedListener() {
@@ -61,6 +66,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
                     // Avis
                     case 1:
+                        startFragementFeedback(fragmentContainerView);
                         return;
 
                     // Reservation
