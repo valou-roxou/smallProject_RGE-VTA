@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smallproject_rge_vta.fragments.SlideshowFragment;
 
-public class Playground extends AppCompatActivity {
 public class PlaygroundActivity extends AppCompatActivity {
 
     @Override
