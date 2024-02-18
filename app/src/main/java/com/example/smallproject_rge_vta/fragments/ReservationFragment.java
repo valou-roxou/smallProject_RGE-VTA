@@ -1,6 +1,7 @@
 package com.example.smallproject_rge_vta.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -12,9 +13,8 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.smallproject_rge_vta.CustomSnackbar;
+import com.example.smallproject_rge_vta.MainActivity;
 import com.example.smallproject_rge_vta.R;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 
 import java.util.Calendar;
 
@@ -28,16 +28,12 @@ public class ReservationFragment extends Fragment {
 
     private Button bookButton;
 
-    private View view;
-
     public ReservationFragment() {
         super(R.layout.fragment_reservation);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        this.view = view;
-
         calendar = Calendar.getInstance();
 
         dateEditText = view.findViewById(R.id.date_editText);
@@ -76,11 +72,16 @@ public class ReservationFragment extends Fragment {
         String nbGuests = guestsEditText.getText().toString();
         // TODO: requête SQL
 
-        // Pop-up
+        // Texte pop-up
         // TODO: remplacer le champ nom restaurant
-        String textPopUp = getString(R.string.reservation_book_pop_up, "Restautn", date, nbGuests);
+        String textPopUp = getString(R.string.reservation_book_pop_up, "Grosse patate", date, nbGuests);
 
-        CustomSnackbar.make(view, textPopUp, BaseTransientBottomBar.LENGTH_LONG).show();
+        Intent intent = new Intent(v.getContext(), MainActivity.class);
+        intent.putExtra("pop_up_success", textPopUp);
+
+
+        // Redirection
+        startActivity(intent);
     };
 
     private final TextWatcher enableBookButton = new TextWatcher() {
