@@ -20,5 +20,6 @@
 
     <!-- FRAGMENT RESERVATION -->
     <string name="reservation_book">Réserver</string>
+    <string name="reservation_book_pop_up">Votre réservation au restaurant %1$s le %2$s pour %3$s personne(s) est faite !</string>
 
 </resources>
