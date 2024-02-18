@@ -12,11 +12,11 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.smallproject_rge_vta.CustomSnackbar;
 import com.example.smallproject_rge_vta.R;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class ReservationFragment extends Fragment {
 
@@ -28,12 +28,16 @@ public class ReservationFragment extends Fragment {
 
     private Button bookButton;
 
+    private View view;
+
     public ReservationFragment() {
         super(R.layout.fragment_reservation);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        this.view = view;
+
         calendar = Calendar.getInstance();
 
         dateEditText = view.findViewById(R.id.date_editText);
@@ -75,15 +79,13 @@ public class ReservationFragment extends Fragment {
         // Pop-up
         // TODO: remplacer le champ nom restaurant
         String textPopUp = getString(R.string.reservation_book_pop_up, "Restautn", date, nbGuests);
-        Snackbar.make(v, textPopUp, Snackbar.LENGTH_SHORT).show();
+
+        CustomSnackbar.make(view, textPopUp, BaseTransientBottomBar.LENGTH_LONG).show();
     };
 
     private final TextWatcher enableBookButton = new TextWatcher() {
-
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -91,8 +93,6 @@ public class ReservationFragment extends Fragment {
         }
 
         @Override
-        public void afterTextChanged(Editable s) {
-
-        }
+        public void afterTextChanged(Editable s) {}
     };
 }
