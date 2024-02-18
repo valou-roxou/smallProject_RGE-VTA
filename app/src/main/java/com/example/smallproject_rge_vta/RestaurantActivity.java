@@ -26,12 +26,6 @@ public class RestaurantActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant);
 
-        Bundle bundle = new Bundle();
-        bundle.putInt("id_restaurant", 0);
-
-        getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
-                .add(R.id.restaurant_fragment_container, SlideshowFragment.class, bundle).commit();
-
         fragmentContainerView = findViewById(R.id.restaurant_fragment_container);
 
         tabLayout = findViewById(R.id.tab_layout);
@@ -41,6 +35,14 @@ public class RestaurantActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).view.setClickable(false);
         tabLayout.getTabAt(1).view.setClickable(false);
         tabLayout.getTabAt(2).select();
+
+        // Slideshow
+        Bundle bundle = new Bundle();
+        bundle.putInt("id_restaurant", 0);
+
+        getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
+                .add(R.id.restaurant_slideshow_fragment_container, SlideshowFragment.class, bundle).commit();
+
     }
 
     public void startFragementReservation(View view) {
