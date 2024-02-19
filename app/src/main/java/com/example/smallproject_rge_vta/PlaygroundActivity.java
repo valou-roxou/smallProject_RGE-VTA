@@ -1,5 +1,6 @@
 package com.example.smallproject_rge_vta;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -21,5 +22,9 @@ public class PlaygroundActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
                 .add(R.id.playground_fragment_container, SlideshowFragment.class, bundle).commit();
+    }
+
+    public void startTakePicture(View view) {
+        startActivity(new Intent(this, CameraActivity.class));
     }
 }
