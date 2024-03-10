@@ -1,5 +1,6 @@
 package com.example.smallproject_rge_vta;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -53,6 +54,10 @@ public class RestaurantActivity extends AppCompatActivity {
     public void startFragementFeedback(View view) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.restaurant_fragment_container, new FeedbackFragment()).commit();
+    }
+
+    public void startCameraActivity (View view) {
+        startActivity(new Intent(this, CameraActivity.class));
     }
 
     private final TabLayout.OnTabSelectedListener tabListener = new TabLayout.OnTabSelectedListener() {

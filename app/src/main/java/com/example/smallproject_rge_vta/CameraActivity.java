@@ -4,18 +4,11 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.CameraMetadata;
-import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.*;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -84,6 +77,7 @@ public class CameraActivity extends AppCompatActivity {
     private void createCameraPreview() {
         // Cible pour la capture de l'aperçu de la caméra
         SurfaceTexture texture = textureView.getSurfaceTexture();
+        texture.setDefaultBufferSize(1920, 1080);
         Surface surface = new Surface(texture);
         try {
             // Prévisualisation de la caméra en utilisant le modèle TEMPLATE_PREVIEW
@@ -105,26 +99,30 @@ public class CameraActivity extends AppCompatActivity {
         try {
             // Caractéristiques de l'image (taille d'image de prise en charge, ...)
             CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraDevice.getId());
-            Size[] jpegSizes = null;
-            if (characteristics != null) {
-                jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
-            }
+            Size[] jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
             int width = 640;
             int height = 480;
             if (jpegSizes != null && jpegSizes.length > 0) {
                 width = jpegSizes[0].getWidth();
                 height = jpegSizes[0].getHeight();
             }
+
+            // Capturer l'image sous forme JPEG
             ImageReader imageReader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
             List<Surface> outputSurfaces = new ArrayList<>(2);
             outputSurfaces.add(imageReader.getSurface());
             outputSurfaces.add(new Surface(textureView.getSurfaceTexture()));
+
+            // Capturer une image fixe
             final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureBuilder.addTarget(imageReader.getSurface());
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+
+            // Définition fichier de sortie
             File file = new File(Environment.getExternalStorageDirectory() + "/pic.jpg");
+
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
@@ -145,6 +143,7 @@ public class CameraActivity extends AppCompatActivity {
                 }
             };
             imageReader.setOnImageAvailableListener(readerListener, null);
+
             cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
@@ -205,5 +204,6 @@ public class CameraActivity extends AppCompatActivity {
 
     private final View.OnClickListener onClickListener = v -> {
         takePicture();
+        finish();
     };
 }
