@@ -1,9 +1,9 @@
 package com.example.smallproject_rge_vta;
 
 public class Restaurant {
-    public String name;
-    public float stars;
-    public int location;
+    private String name;
+    private float stars;
+    private int location;
 
     public Restaurant(String name, float stars, int location) {
         this.name = name;

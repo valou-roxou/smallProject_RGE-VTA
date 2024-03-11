@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
         database =  FirebaseFirestore.getInstance();
         CollectionReference docRef = database.collection("restaurant");
-        Log.d(TAG, docRef.toString());
 
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -46,24 +45,13 @@ public class MainActivity extends AppCompatActivity {
                     restaurants.add(restaurant);
                 }
 
-                RecyclerView recyclerView = (RecyclerView) this.findViewById(R.id.recycler_view);
-                recyclerView.setAdapter(new CustomRecyclerViewAdapter(this, restaurants));
-
-                // RecyclerView scroll vertical
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-                recyclerView.setLayoutManager(linearLayoutManager);
-
-                if(bundle != null) {
-                    String popUpSuccess = bundle.getString("pop_up_success");
-                    if(popUpSuccess != null) {
-                        CustomSnackbar.make(findViewById(android.R.id.content), popUpSuccess, BaseTransientBottomBar.LENGTH_LONG).show();
-                    }
-                }
+                showRestaurants(bundle);
             } else {
                 Log.d(TAG, "Error getting documents: ", task.getException());
             }
         });
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -79,5 +67,21 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showRestaurants(Bundle bundle) {
+        RecyclerView recyclerView = this.findViewById(R.id.recycler_view);
+        recyclerView.setAdapter(new CustomRecyclerViewAdapter(this, restaurants));
+
+        // RecyclerView scroll vertical
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        if(bundle != null) {
+            String popUpSuccess = bundle.getString("pop_up_success");
+            if(popUpSuccess != null) {
+                CustomSnackbar.make(findViewById(android.R.id.content), popUpSuccess, BaseTransientBottomBar.LENGTH_LONG).show();
+            }
+        }
     }
 }
