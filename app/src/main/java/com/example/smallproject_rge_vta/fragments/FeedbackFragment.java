@@ -16,7 +16,5 @@ public class FeedbackFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-
-        // TODO: Mettre le slideshow
     }
 }

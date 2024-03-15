@@ -1,14 +1,19 @@
 package com.example.smallproject_rge_vta;
 
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.*;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -20,24 +25,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private CameraManager cameraManager;
     private String cameraId;
     private CameraDevice cameraDevice;
     private CameraCaptureSession cameraCaptureSession;
     private CaptureRequest.Builder captureRequestBuilder;
     private TextureView textureView;
     private Button button;
+    private Uri uri;
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
@@ -59,7 +63,7 @@ public class CameraActivity extends AppCompatActivity {
         button.setOnClickListener(onClickListener);
 
         // Accéder aux fonctions caméra
-        cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         try {
             // On récupère la première caméra disponible
             cameraId = cameraManager.getCameraIdList()[0];
@@ -77,17 +81,19 @@ public class CameraActivity extends AppCompatActivity {
     private void createCameraPreview() {
         // Cible pour la capture de l'aperçu de la caméra
         SurfaceTexture texture = textureView.getSurfaceTexture();
-        texture.setDefaultBufferSize(1920, 1080);
-        Surface surface = new Surface(texture);
-        try {
-            // Prévisualisation de la caméra en utilisant le modèle TEMPLATE_PREVIEW
-            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-            captureRequestBuilder.addTarget(surface);
+        if (texture != null) {
+            texture.setDefaultBufferSize(1920, 1080);
+            Surface surface = new Surface(texture);
+            try {
+                // Prévisualisation de la caméra en utilisant le modèle TEMPLATE_PREVIEW
+                captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                captureRequestBuilder.addTarget(surface);
 
-            // Gérer la prévisualisation
-            cameraDevice.createCaptureSession(Collections.singletonList(surface), sessionStateCallback,null);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
+                // Gérer la prévisualisation
+                cameraDevice.createCaptureSession(Collections.singletonList(surface), sessionStateCallback,null);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -120,9 +126,7 @@ public class CameraActivity extends AppCompatActivity {
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
 
-            // Définition fichier de sortie
-            File file = new File(Environment.getExternalStorageDirectory() + "/pic.jpg");
-
+            // Ecriture du fichier
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
@@ -137,9 +141,24 @@ public class CameraActivity extends AppCompatActivity {
                 }
 
                 private void save(byte[] bytes) throws IOException {
-                    try (OutputStream output = Files.newOutputStream(file.toPath())) {
-                        output.write(bytes);
+                    // Création uri
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.DISPLAY_NAME, "picture"+new Date().hashCode()+".jpg");
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                    ContentResolver resolver = getContentResolver();
+
+                    uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                    if(uri != null) {
+                        OutputStream outputStream = resolver.openOutputStream(uri);
+                        if(outputStream != null) {
+                            outputStream.write(bytes);
+                            outputStream.flush();
+                            outputStream.close();
+                        }
                     }
+
+                    // On ferme l'activité
+                    stopCameraActivity();
                 }
             };
             imageReader.setOnImageAvailableListener(readerListener, null);
@@ -158,9 +177,18 @@ public class CameraActivity extends AppCompatActivity {
                 public void onConfigureFailed(@NonNull CameraCaptureSession session) {
                 }
             }, null);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stopCameraActivity() {
+        // On passe le path de l'uri et ok pour le composant appellant
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("uri_path", uri.toString());
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
     }
 
     private final CameraDevice.StateCallback deviceStateCallback = new CameraDevice.StateCallback() {
@@ -204,6 +232,5 @@ public class CameraActivity extends AppCompatActivity {
 
     private final View.OnClickListener onClickListener = v -> {
         takePicture();
-        finish();
     };
 }
