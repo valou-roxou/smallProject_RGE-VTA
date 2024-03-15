@@ -1,7 +1,11 @@
 package com.example.smallproject_rge_vta.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,6 +13,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.smallproject_rge_vta.MainActivity;
 import com.example.smallproject_rge_vta.R;
 
 import java.util.Calendar;
@@ -33,11 +38,14 @@ public class ReservationFragment extends Fragment {
 
         dateEditText = view.findViewById(R.id.date_editText);
         dateEditText.setOnClickListener(dateListener);
+        dateEditText.addTextChangedListener(enableBookButton);
 
         guestsEditText = view.findViewById(R.id.guests_editText);
+        guestsEditText.addTextChangedListener(enableBookButton);
 
         bookButton = view.findViewById(R.id.book_button);
         bookButton.setOnClickListener(bookListener);
+        bookButton.setEnabled(false);
     }
 
     private final View.OnClickListener dateListener = v -> {
@@ -63,8 +71,32 @@ public class ReservationFragment extends Fragment {
     };
 
     private final View.OnClickListener bookListener = v -> {
-        // dateEditText.getText();
-        // guestsEditText.getText();
+        String date = dateEditText.getText().toString();
+        String nbGuests = guestsEditText.getText().toString();
         // TODO: requête SQL
+
+        // Texte pop-up
+        // TODO: remplacer le champ nom restaurant
+        String textPopUp = getString(R.string.reservation_book_pop_up, "Grosse patate", date, nbGuests);
+
+        Intent intent = new Intent(v.getContext(), MainActivity.class);
+        intent.putExtra("pop_up_success", textPopUp);
+
+
+        // Redirection
+        startActivity(intent);
+    };
+
+    private final TextWatcher enableBookButton = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            bookButton.setEnabled(!TextUtils.isEmpty(dateEditText.getText()) && !TextUtils.isEmpty(guestsEditText.getText()));
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {}
     };
 }

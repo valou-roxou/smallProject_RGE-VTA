@@ -43,7 +43,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
         fragmentContainerView = findViewById(R.id.restaurant_fragment_container);
 
-        tabLayout = findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
 
         // TODO: Implémenter le comportement des ongles "Menu" et "Avis"
