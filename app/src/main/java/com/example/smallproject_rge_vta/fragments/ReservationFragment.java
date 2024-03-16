@@ -63,6 +63,9 @@ public class ReservationFragment extends Fragment {
                         dateEditText.setText(selectedDate);
                     }, year, month, dayOfMonth);
 
+            // Sélection date actuel
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
             // Afficher le dialogue de sélection de la date
             datePickerDialog.show();
     };
