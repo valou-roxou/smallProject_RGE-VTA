@@ -3,9 +3,6 @@ package com.example.smallproject_rge_vta;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -23,9 +20,6 @@ import androidx.fragment.app.FragmentContainerView;
 
 import com.example.smallproject_rge_vta.fragments.ReservationFragment;
 import com.google.android.material.tabs.TabLayout;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public class RestaurantActivity extends AppCompatActivity {
 
@@ -46,7 +40,7 @@ public class RestaurantActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.restaurant_tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
 
-        // TODO: Implémenter le comportement des ongles "Menu" et "Avis"
+        // TODO: Implémenter le comportement des ongles "Menu"
         tabLayout.getTabAt(0).view.setClickable(false);
         tabLayout.getTabAt(1).select();
 
@@ -78,32 +72,41 @@ public class RestaurantActivity extends AppCompatActivity {
         }
     }
 
-    private ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
+    public void startPictureActivity(String uriPath) {
+        Intent intent = new Intent(this, PictureActivity.class);
+        intent.putExtra("uri_path_picture", uriPath);
+        pictureResultLauncher.launch(intent);
+    }
+
+    private final ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 // Si l'activité s'est bien terminé et qu'on a un résultat
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     Intent data = result.getData();
-                    String uriPath = data.getStringExtra("uri_path");
+                    String uriPath = data.getStringExtra("uri_path_picture");
                     // Si on a bien une uri
                     if(uriPath != null) {
-                        // On ouvre le contenu associé à l'URI
-                        try (InputStream inputStream = getContentResolver().openInputStream(Uri.parse(uriPath))){
-                            // Affichage de l'image si on a son contenu
-                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                            // Rotation à 90 de l'image
-                            Matrix matrix = new Matrix();
-                            matrix.postRotate(90);
-                            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-                            imageView.setImageBitmap(rotatedBitmap);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        startPictureActivity(uriPath);
                     }
                 }
             });
+
+
+    private final ActivityResultLauncher<Intent> pictureResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                // Si l'activité s'est bien terminé et qu'on a un résultat
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    String uriPath = data.getStringExtra("uri_path_custom_picture");
+                    // Si on a bien une uri
+                    if(uriPath != null) {
+                        imageView.setImageURI(Uri.parse(uriPath));
+                    }
+                }
+            });
+
 
     private final TabLayout.OnTabSelectedListener tabListener = new TabLayout.OnTabSelectedListener() {
             @Override

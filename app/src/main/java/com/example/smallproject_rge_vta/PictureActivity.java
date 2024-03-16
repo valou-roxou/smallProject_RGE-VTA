@@ -1,14 +1,15 @@
 package com.example.smallproject_rge_vta;
 
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -20,15 +21,13 @@ import com.example.smallproject_rge_vta.fragments.StickerFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Date;
 
 public class PictureActivity extends AppCompatActivity {
 
     private ImageView imageView;
 
     private FragmentContainerView fragmentContainerView;
-
-    private Drawable drawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +41,7 @@ public class PictureActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).select();
 
         imageView = findViewById(R.id.filter_picture_picture);
+        imageView.setDrawingCacheEnabled(true);
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -49,9 +49,8 @@ public class PictureActivity extends AppCompatActivity {
             // Si on a bien une uri
             if(uriPathPicture != null) {
                 // On ouvre le contenu associé à l'URI
-                try (InputStream inputStream = getContentResolver().openInputStream(Uri.parse(uriPathPicture))){
-                    // Affichage de l'image si on a son contenu
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(uriPathPicture));
 
                     // Rotation à 90 de l'image
                     Matrix matrix = new Matrix();
@@ -59,7 +58,6 @@ public class PictureActivity extends AppCompatActivity {
                     Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
                     imageView.setImageBitmap(rotatedBitmap);
-                    drawable = imageView.getDrawable();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -78,12 +76,20 @@ public class PictureActivity extends AppCompatActivity {
     }
 
     public void stopPictureActivity(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
+
+        ContentResolver resolver = getContentResolver();
+        String uriPathCustomPicture = MediaStore.Images.Media.insertImage(resolver, bitmap, "picture"+new Date().hashCode(), "");
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("uri_path_custom_picture", uriPathCustomPicture);
+        setResult(Activity.RESULT_OK, resultIntent);
+
         finish();
     }
 
     public void onClickNoFilter(View view) {
-        drawable.clearColorFilter();
-        imageView.setImageDrawable(drawable);
+        imageView.getDrawable().clearColorFilter();
     }
 
     public void onClickFilter1(View view) {
@@ -97,8 +103,7 @@ public class PictureActivity extends AppCompatActivity {
         ColorMatrix colorMatrix = new ColorMatrix();
         colorMatrix.set(blackAndWhiteMatrix);
         ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-        drawable.setColorFilter(colorFilter);
-        imageView.setImageDrawable(drawable);
+        imageView.getDrawable().setColorFilter(colorFilter);
     }
 
     public void onClickFilter2(View view) {
@@ -112,8 +117,7 @@ public class PictureActivity extends AppCompatActivity {
         ColorMatrix colorMatrix = new ColorMatrix();
         colorMatrix.set(negativeMatrix);
         ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-        drawable.setColorFilter(colorFilter);
-        imageView.setImageDrawable(drawable);
+        imageView.getDrawable().setColorFilter(colorFilter);
     }
 
     private final TabLayout.OnTabSelectedListener tabListener = new TabLayout.OnTabSelectedListener() {
