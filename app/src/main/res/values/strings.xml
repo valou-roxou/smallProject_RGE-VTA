@@ -37,7 +37,7 @@
 
     <!-- FRAGMENT FILTER -->
     <string name="filter_no_filter">Sans filtre</string>
-    <string name="filter_1">Filtre 1</string>
-    <string name="filter_2">Filtre 2</string>
+    <string name="filter_1">Noir et blanc</string>
+    <string name="filter_2">Négatif</string>
 
 </resources>

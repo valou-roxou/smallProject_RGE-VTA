@@ -3,7 +3,10 @@ package com.example.smallproject_rge_vta;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +27,8 @@ public class PictureActivity extends AppCompatActivity {
     private ImageView imageView;
 
     private FragmentContainerView fragmentContainerView;
+
+    private Drawable drawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,7 @@ public class PictureActivity extends AppCompatActivity {
                     Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
                     imageView.setImageBitmap(rotatedBitmap);
+                    drawable = imageView.getDrawable();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -73,6 +79,41 @@ public class PictureActivity extends AppCompatActivity {
 
     public void stopPictureActivity(View view) {
         finish();
+    }
+
+    public void onClickNoFilter(View view) {
+        drawable.clearColorFilter();
+        imageView.setImageDrawable(drawable);
+    }
+
+    public void onClickFilter1(View view) {
+        // Black and white filter
+        float[] blackAndWhiteMatrix = {
+                0.33f, 0.59f, 0.11f, 0, 0,  // Rouge
+                0.33f, 0.59f, 0.11f, 0, 0,  // Vert
+                0.33f, 0.59f, 0.11f, 0, 0,  // Bleu
+                0,     0,     0,     1, 0   // Alpha
+        };
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.set(blackAndWhiteMatrix);
+        ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+        drawable.setColorFilter(colorFilter);
+        imageView.setImageDrawable(drawable);
+    }
+
+    public void onClickFilter2(View view) {
+        // Negative filter
+        float[] negativeMatrix = {
+                -1, 0, 0, 0, 255, // Rouge
+                0, -1, 0, 0, 255, // Vert
+                0, 0, -1, 0, 255, // Bleu
+                0, 0, 0, 1, 0     // Alpha
+        };
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.set(negativeMatrix);
+        ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+        drawable.setColorFilter(colorFilter);
+        imageView.setImageDrawable(drawable);
     }
 
     private final TabLayout.OnTabSelectedListener tabListener = new TabLayout.OnTabSelectedListener() {
