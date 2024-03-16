@@ -9,7 +9,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FirestoreManager {
     private static final String TAG = "firebase";
@@ -27,12 +29,8 @@ public class FirestoreManager {
                 List<Restaurant> restaurants = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Log.d(TAG, document.getId() + " => " + document.getData());
-                    Restaurant restaurant = new Restaurant(
-                            document.getId(),
-                            document.getString("name"),
-                            document.getDouble("stars").floatValue(),
-                            document.getLong("location").intValue()
-                    );
+                    Restaurant restaurant = document.toObject(Restaurant.class);
+                    restaurant.setId(document.getId());
                     restaurants.add(restaurant);
                 }
                 callback.onCallback(restaurants);
@@ -45,15 +43,36 @@ public class FirestoreManager {
     public static void postFeedback(FirestoreCallback callback, Restaurant restaurant, String text) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         CollectionReference docRef = database.collection("feedback");
-        Feedback feedback = new Feedback(java.util.UUID.randomUUID().toString(),null, restaurant.getId(), text);
+        String feedbackId = java.util.UUID.randomUUID().toString();
+        Feedback feedback = new Feedback(feedbackId,null, restaurant.getId(), text);
 
-        docRef.add(feedback)
-                .addOnSuccessListener(documentReference -> {
-                    Log.d(TAG, "Feedback added with ID: " + documentReference.getId());
+        docRef.document(feedbackId).set(feedback)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Feedback added with ID: " + feedbackId);
                     callback.onCallback(null);
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error adding feedback", e);
+                });
+
+        restaurant.addFeedback(feedbackId);
+        updateRestaurant(restaurant);
+    }
+
+    private static void updateRestaurant(Restaurant restaurant) {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        CollectionReference restaurantRef = database.collection("restaurant");
+        String restaurantId = restaurant.getId();
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("feedbacks", restaurant.getFeedbacks());
+
+        restaurantRef.document(restaurantId).update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Restaurant updated successfully");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error updating restaurant", e);
                 });
     }
 }

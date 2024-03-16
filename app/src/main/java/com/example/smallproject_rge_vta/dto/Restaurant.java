@@ -1,18 +1,28 @@
 package com.example.smallproject_rge_vta.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Restaurant implements Serializable {
-    private final String id;
+    private String id;
     private String name;
     private float stars;
     private int location;
+    private List<String> feedbacks;
 
-    public Restaurant(String id, String name, float stars, int location) {
+    public Restaurant() {}
+
+    public Restaurant(String id, String name, float stars, int location, List<String> feedbacks) {
         this.id = id;
         this.name = name;
         this.stars = stars;
         this.location = location;
+        this.feedbacks = feedbacks;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getId() { return id; }
@@ -39,5 +49,18 @@ public class Restaurant implements Serializable {
 
     public void setLocation(int location) {
         this.location = location;
+    }
+
+    public List<String> getFeedbacks() {
+        return feedbacks;
+    }
+
+    public void setFeedbacks(List<String> feedbacks) {
+        this.feedbacks = feedbacks;
+    }
+
+    public void addFeedback(String feedbackId) {
+        if(feedbacks == null) feedbacks = new ArrayList<>();
+        feedbacks.add(feedbackId);
     }
 }
