@@ -28,6 +28,7 @@
     <string name="feedback_save">Enregistrer</string>
     <string name="feedback_take_picture">Prendre une photo</string>
     <string name="feedback_saved_pop_up">Votre avis sur le restaurant \"%1$s\" est enregistré !</string>
+    <string name="feedback_map">GMap</string>
 
 
 </resources>
