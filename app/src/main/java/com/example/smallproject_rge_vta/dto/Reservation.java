@@ -7,14 +7,12 @@ public class Reservation {
     public Date date;
     public int nbGuests;
     public String restaurantId;
-    public User user;
 
-    public Reservation(String id, Date date, int nbGuests, String restaurantId, User user) {
+    public Reservation(String id, Date date, int nbGuests, String restaurantId) {
         this.id = id;
         this.date = date;
         this.nbGuests = nbGuests;
         this.restaurantId = restaurantId;
-        this.user = user;
     }
 
     public String getId() {
@@ -47,13 +45,5 @@ public class Reservation {
 
     public void setRestaurantId(String restaurantId) {
         this.restaurantId = restaurantId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

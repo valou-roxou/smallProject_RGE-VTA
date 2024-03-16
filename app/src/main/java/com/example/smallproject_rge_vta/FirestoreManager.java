@@ -45,7 +45,7 @@ public class FirestoreManager {
     public static void postFeedback(FirestoreCallback callback, Restaurant restaurant, String text) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         CollectionReference docRef = database.collection("feedback");
-        Feedback feedback = new Feedback(java.util.UUID.randomUUID().toString(),null, restaurant.getId(), text, null);
+        Feedback feedback = new Feedback(java.util.UUID.randomUUID().toString(),null, restaurant.getId(), text);
 
         docRef.add(feedback)
                 .addOnSuccessListener(documentReference -> {
