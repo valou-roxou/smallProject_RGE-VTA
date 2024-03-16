@@ -21,6 +21,8 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -157,8 +159,7 @@ public class CameraActivity extends AppCompatActivity {
                         }
                     }
 
-                    // On ferme l'activité
-                    stopCameraActivity();
+                    startPictureActivity();
                 }
             };
             imageReader.setOnImageAvailableListener(readerListener, null);
@@ -183,12 +184,10 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    public void stopCameraActivity() {
-        // On passe le path de l'uri et ok pour le composant appellant
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("uri_path", uri.toString());
-        setResult(Activity.RESULT_OK, resultIntent);
-        finish();
+    public void startPictureActivity() {
+        Intent intent = new Intent(this, PictureActivity.class);
+        intent.putExtra("uri_path_picture", uri.toString());
+        pictureResultLauncher.launch(intent);
     }
 
     private final CameraDevice.StateCallback deviceStateCallback = new CameraDevice.StateCallback() {
@@ -229,6 +228,24 @@ public class CameraActivity extends AppCompatActivity {
         public void onConfigureFailed(@NonNull CameraCaptureSession session) {
         }
     };
+
+    private ActivityResultLauncher<Intent> pictureResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                // Si l'activité s'est bien terminé et qu'on a un résultat
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    String uriPath = data.getStringExtra("uri_path_custom_picture");
+                    // Si on a bien une uri
+                    if(uriPath != null) {
+                        // On passe le path de l'uri et ok pour le composant appellant
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("uri_path_custom_picture", uriPath);
+                        setResult(Activity.RESULT_OK, resultIntent);
+                        finish();
+                    }
+                }
+            });
 
     private final View.OnClickListener onClickListener = v -> {
         takePicture();

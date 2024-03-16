@@ -37,6 +37,12 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity
+            android:name=".PictureActivity"
+            android:exported="false"
+            android:label="Picture"
+            android:parentActivityName=".CameraActivity"
+            android:theme="@style/Theme.SmallProject_RGEVTA" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

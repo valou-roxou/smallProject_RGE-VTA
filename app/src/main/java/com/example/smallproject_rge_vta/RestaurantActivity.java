@@ -31,8 +31,6 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private ImageView imageView;
 
-    private TabLayout tabLayout;
-
     private FragmentContainerView fragmentContainerView;
 
     public RestaurantActivity() {
@@ -45,7 +43,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
         fragmentContainerView = findViewById(R.id.restaurant_fragment_container);
 
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.restaurant_tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
 
         // TODO: Implémenter le comportement des ongles "Menu" et "Avis"
@@ -124,7 +122,6 @@ public class RestaurantActivity extends AppCompatActivity {
                     // Reservation
                     case 2:
                         startFragementReservation(fragmentContainerView);
-                        return;
                 }
             }
 
