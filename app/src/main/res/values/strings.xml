@@ -28,4 +28,14 @@
     <string name="feedback_save">Enregistrer</string>
     <string name="feedback_take_picture">Prendre une photo</string>
 
+    <!-- TAB CUSTOM PICTURE -->
+    <string name="tab_filter">Filtres</string>
+    <string name="tab_sticker">Stickers</string>
+
+    <!-- FRAGMENT FILTER -->
+    <string name="filter_no_filter">Sans filtre</string>
+    <string name="filter_1">Filtre 1</string>
+    <string name="filter_2">Filtre 2</string>
+
+
 </resources>

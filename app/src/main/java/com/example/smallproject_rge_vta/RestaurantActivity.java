@@ -2,6 +2,7 @@ package com.example.smallproject_rge_vta;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.smallproject_rge_vta.fragments.FeedbackFragment;
 import com.example.smallproject_rge_vta.fragments.SlideshowFragment;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.example.smallproject_rge_vta.fragments.ReservationFragment;
@@ -70,8 +72,12 @@ public class RestaurantActivity extends AppCompatActivity {
     }
 
     public void startCameraActivity (View view) {
-        imageView = findViewById(R.id.take_picture_picture);
-        cameraResultLauncher.launch(new Intent(this, CameraActivity.class));
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(RestaurantActivity.this, new String[]{android.Manifest.permission.CAMERA}, 200);
+        } else {
+            imageView = findViewById(R.id.take_picture_picture);
+            cameraResultLauncher.launch(new Intent(this, CameraActivity.class));
+        }
     }
 
     private ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
