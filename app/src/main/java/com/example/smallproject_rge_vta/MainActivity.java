@@ -6,49 +6,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.smallproject_rge_vta.dto.Restaurant;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    FirebaseFirestore database;
-    List<Restaurant> restaurants = new ArrayList<>();
-    String TAG = "firebase";
-
+    List<Restaurant> restaurants;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Bundle bundle = getIntent().getExtras();
 
-        database =  FirebaseFirestore.getInstance();
-        CollectionReference docRef = database.collection("restaurant");
-
-        docRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Log.d(TAG, document.getId() + " => " + document.getData());
-                    Restaurant restaurant = new Restaurant(
-                            document.getString("name"),
-                            document.getDouble("stars").floatValue(),
-                            document.getLong("location").intValue()
-                    );
-                    restaurants.add(restaurant);
-                }
-
-                showRestaurants(bundle);
-            } else {
-                Log.d(TAG, "Error getting documents: ", task.getException());
-            }
+        FirestoreManager.getRestaurants(data -> {
+            restaurants = (List<Restaurant>) data;
+            showRestaurants(bundle);
         });
     }
 
