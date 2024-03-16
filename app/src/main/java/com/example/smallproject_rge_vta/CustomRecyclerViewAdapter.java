@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smallproject_rge_vta.dto.Restaurant;
+
+import java.io.Serializable;
 import java.util.List;
 
 public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantViewHolder> {
@@ -31,7 +34,10 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantVi
         View recyclerViewItem = mLayoutInflater.inflate(R.layout.custom_recyclerview_item, parent, false);
 
         recyclerViewItem.setOnClickListener(v -> {
+            int position = ((RecyclerView) parent).getChildLayoutPosition(v);
+            Restaurant restaurant = restaurants.get(position);
             Intent intent = new Intent(v.getContext(), RestaurantActivity.class);
+            intent.putExtra("restaurant", restaurant);
             v.getContext().startActivity(intent);
         });
         return new RestaurantViewHolder(recyclerViewItem);

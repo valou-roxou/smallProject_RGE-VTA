@@ -7,13 +7,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.smallproject_rge_vta.dto.Restaurant;
 import com.example.smallproject_rge_vta.fragments.FeedbackFragment;
 import com.example.smallproject_rge_vta.fragments.SlideshowFragment;
 
@@ -33,6 +36,8 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private FragmentContainerView fragmentContainerView;
 
+    private Restaurant restaurant;
+
     public RestaurantActivity() {
     }
 
@@ -45,6 +50,12 @@ public class RestaurantActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
+
+        // Get the data passed when clicked
+        Intent intent = getIntent();
+        if (intent != null) {
+            restaurant = (Restaurant) intent.getSerializableExtra("restaurant");
+        }
 
         // TODO: Implémenter le comportement des ongles "Menu" et "Avis"
         tabLayout.getTabAt(0).view.setClickable(false);
@@ -72,6 +83,18 @@ public class RestaurantActivity extends AppCompatActivity {
     public void startCameraActivity (View view) {
         imageView = findViewById(R.id.take_picture_picture);
         cameraResultLauncher.launch(new Intent(this, CameraActivity.class));
+    }
+
+    public void onClickSavedAvis(View view) {
+        TextView commentTextView = findViewById(R.id.comment_editText);
+        String comment = commentTextView.getText().toString();
+        FirestoreManager.postFeedback(data -> {
+            String textPopUp = getString(R.string.feedback_saved_pop_up, restaurant.getName());
+
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            intent.putExtra("pop_up_success", textPopUp);
+            startActivity(intent);
+        }, restaurant, comment);
     }
 
     private ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
