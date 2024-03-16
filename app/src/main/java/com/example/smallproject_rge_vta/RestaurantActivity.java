@@ -89,7 +89,11 @@ public class RestaurantActivity extends AppCompatActivity {
         TextView commentTextView = findViewById(R.id.comment_editText);
         String comment = commentTextView.getText().toString();
         FirestoreManager.postFeedback(data -> {
-            // TODO : Ajouter un feedback pour dire que l'avis a été bien enregistré
+            String textPopUp = getString(R.string.feedback_saved_pop_up, restaurant.getName());
+
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            intent.putExtra("pop_up_success", textPopUp);
+            startActivity(intent);
         }, restaurant, comment);
     }
 
