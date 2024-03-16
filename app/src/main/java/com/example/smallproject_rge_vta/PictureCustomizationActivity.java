@@ -5,9 +5,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -31,6 +33,8 @@ import java.util.Date;
 public class PictureCustomizationActivity extends AppCompatActivity implements SensorEventListener {
 
     private ImageView imageView;
+
+    private ImageView sticker;
 
     private FragmentContainerView fragmentContainerView;
 
@@ -60,6 +64,8 @@ public class PictureCustomizationActivity extends AppCompatActivity implements S
 
         imageView = findViewById(R.id.filter_picture_picture);
         imageView.setDrawingCacheEnabled(true);
+
+        sticker = findViewById(R.id.sticker_picture);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -100,10 +106,15 @@ public class PictureCustomizationActivity extends AppCompatActivity implements S
     }
 
     public void stopPictureActivity(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
+        Bitmap pictureBitmap = Bitmap.createBitmap(imageView.getDrawingCache());
+        Bitmap stickerBitmap = ((BitmapDrawable) sticker.getDrawable()).getBitmap();
+        Bitmap stickerBitmapResize = Bitmap.createScaledBitmap(stickerBitmap, 100, 100, true);
+
+        Canvas canvas = new Canvas(pictureBitmap);
+        canvas.drawBitmap(stickerBitmapResize, 0, 0, null);
 
         ContentResolver resolver = getContentResolver();
-        String uriPathCustomPicture = MediaStore.Images.Media.insertImage(resolver, bitmap, "picture"+new Date().hashCode(), "");
+        String uriPathCustomPicture = MediaStore.Images.Media.insertImage(resolver, pictureBitmap, "picture"+new Date().hashCode(), "");
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra("uri_path_custom_picture", uriPathCustomPicture);
@@ -126,6 +137,10 @@ public class PictureCustomizationActivity extends AppCompatActivity implements S
         sensorManager.unregisterListener(this);
         actualMatrix = CustomMatrixEnum.POSITIVE.getFloatMatrix();
         sensorManager.registerListener(this, shakeSensor, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    public void addSticker(View view) {
+        sticker.setImageDrawable(((ImageView) view).getDrawable());
     }
 
     @Override

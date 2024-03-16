@@ -1,7 +1,6 @@
 package com.example.smallproject_rge_vta.fragments;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,7 +12,6 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.smallproject_rge_vta.MainActivity;
 import com.example.smallproject_rge_vta.R;
 
 import java.util.Calendar;
