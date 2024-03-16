@@ -4,11 +4,11 @@ import java.util.Date;
 
 public class Reservation {
     public String id;
-    public Date date;
+    public String date;
     public int nbGuests;
     public String restaurantId;
 
-    public Reservation(String id, Date date, int nbGuests, String restaurantId) {
+    public Reservation(String id, String date, int nbGuests, String restaurantId) {
         this.id = id;
         this.date = date;
         this.nbGuests = nbGuests;
@@ -23,11 +23,11 @@ public class Reservation {
         this.id = id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
