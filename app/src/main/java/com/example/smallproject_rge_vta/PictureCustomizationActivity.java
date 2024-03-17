@@ -107,11 +107,14 @@ public class PictureCustomizationActivity extends AppCompatActivity implements S
 
     public void stopPictureActivity(View view) {
         Bitmap pictureBitmap = Bitmap.createBitmap(imageView.getDrawingCache());
-        Bitmap stickerBitmap = ((BitmapDrawable) sticker.getDrawable()).getBitmap();
-        Bitmap stickerBitmapResize = Bitmap.createScaledBitmap(stickerBitmap, 100, 100, true);
 
-        Canvas canvas = new Canvas(pictureBitmap);
-        canvas.drawBitmap(stickerBitmapResize, 0, 0, null);
+        if (sticker.getDrawable() != null) {
+            Bitmap stickerBitmap = ((BitmapDrawable) sticker.getDrawable()).getBitmap();
+            Bitmap stickerBitmapResize = Bitmap.createScaledBitmap(stickerBitmap, 100, 100, true);
+
+            Canvas canvas = new Canvas(pictureBitmap);
+            canvas.drawBitmap(stickerBitmapResize, 0, 0, null);
+        }
 
         ContentResolver resolver = getContentResolver();
         String uriPathCustomPicture = MediaStore.Images.Media.insertImage(resolver, pictureBitmap, "picture"+new Date().hashCode(), "");
@@ -141,6 +144,10 @@ public class PictureCustomizationActivity extends AppCompatActivity implements S
 
     public void addSticker(View view) {
         sticker.setImageDrawable(((ImageView) view).getDrawable());
+    }
+
+    public void deleteSticker(View view) {
+        sticker.setImageDrawable(null);
     }
 
     @Override
