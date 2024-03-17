@@ -3,13 +3,19 @@ package com.example.smallproject_rge_vta;
 import android.util.Log;
 
 import com.example.smallproject_rge_vta.dto.Feedback;
+import com.example.smallproject_rge_vta.dto.Picture;
 import com.example.smallproject_rge_vta.dto.Reservation;
 import com.example.smallproject_rge_vta.dto.Restaurant;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +47,38 @@ public class FirestoreManager {
         });
     }
 
-    public static void postFeedback(FirestoreCallback callback, Restaurant restaurant, String text) {
+    public static void getPictureById(FirestoreCallback callback, String pictureId) {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        DocumentReference docRef = database.collection("picture").document(pictureId);
+
+        // Get the document by its ID
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    Picture picture = document.toObject(Picture.class);
+                    assert picture != null;
+
+                    picture.setId(document.getId());
+                    callback.onCallback(picture);
+                } else {
+                    Log.d(TAG, "No such document");
+                    callback.onCallback(null);
+                }
+            } else {
+                Log.d(TAG, "Error getting documents: ", task.getException());
+            }
+        });
+    }
+
+    public static void postFeedback(FirestoreCallback callback, Restaurant restaurant, String text, List<String> imageData) {
+        List<String> picturesId = postPictures(imageData);
+
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         CollectionReference docRef = database.collection("feedback");
         String feedbackId = java.util.UUID.randomUUID().toString();
-        Feedback feedback = new Feedback(feedbackId,null, restaurant.getId(), text);
+        Feedback feedback = new Feedback(feedbackId, picturesId, restaurant.getId(), text);
 
         docRef.document(feedbackId).set(feedback)
                 .addOnSuccessListener(aVoid -> {
@@ -61,6 +94,28 @@ public class FirestoreManager {
         Map<String, Object> updates = new HashMap<>();
         updates.put("feedbacks", restaurant.getFeedbacks());
         updateRestaurant(restaurant, updates);
+    }
+
+    private static List<String> postPictures(List<String> imageData) {
+        List<String> picturesId = new ArrayList<>();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        CollectionReference docRef = database.collection("picture");
+
+        for(String imageDataB64 : imageData) {
+            String pictureId = java.util.UUID.randomUUID().toString();
+            picturesId.add(pictureId);
+            Picture picture = new Picture(pictureId, imageDataB64);
+
+            docRef.document(pictureId).set(picture)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d(TAG, "Feedback added with ID: " + pictureId);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error adding feedback", e);
+                    });
+        }
+
+        return picturesId;
     }
 
     private static void updateRestaurant(Restaurant restaurant, Map<String, Object> updates) {
