@@ -37,7 +37,7 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity
-            android:name=".PictureActivity"
+            android:name=".PictureCustomizationActivity"
             android:exported="false"
             android:label="Picture"
             android:parentActivityName=".CameraActivity"

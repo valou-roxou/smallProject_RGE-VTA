@@ -28,7 +28,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.io.IOException;
 import java.util.Date;
 
-public class PictureActivity extends AppCompatActivity implements SensorEventListener {
+public class PictureCustomizationActivity extends AppCompatActivity implements SensorEventListener {
 
     private ImageView imageView;
 
@@ -53,6 +53,10 @@ public class PictureActivity extends AppCompatActivity implements SensorEventLis
 
         TabLayout tabLayout = findViewById(R.id.picture_tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
+        tabLayout.getTabAt(0).select();
+
+        // TODO: pk ça s'actualise pas seul comme dans RestaurantActivity ?????? >:(
+        startFragementFilters(fragmentContainerView);
 
         imageView = findViewById(R.id.filter_picture_picture);
         imageView.setDrawingCacheEnabled(true);
@@ -83,8 +87,6 @@ public class PictureActivity extends AppCompatActivity implements SensorEventLis
                 }
             }
         }
-
-        tabLayout.getTabAt(0).select();
     }
 
     public void startFragementFilters(View view) {

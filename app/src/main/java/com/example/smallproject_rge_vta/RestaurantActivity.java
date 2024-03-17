@@ -50,7 +50,6 @@ public class RestaurantActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
                 .replace(R.id.restaurant_slideshow_fragment_container, SlideshowFragment.class, bundle).commit();
-
     }
 
     public void startFragementReservation(View view) {
@@ -73,7 +72,7 @@ public class RestaurantActivity extends AppCompatActivity {
     }
 
     public void startPictureActivity(String uriPath) {
-        Intent intent = new Intent(this, PictureActivity.class);
+        Intent intent = new Intent(this, PictureCustomizationActivity.class);
         intent.putExtra("uri_path_picture", uriPath);
         pictureResultLauncher.launch(intent);
     }
