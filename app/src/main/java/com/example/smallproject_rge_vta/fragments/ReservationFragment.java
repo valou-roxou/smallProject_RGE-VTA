@@ -44,7 +44,6 @@ public class ReservationFragment extends Fragment {
         guestsEditText.addTextChangedListener(enableBookButton);
 
         bookButton = view.findViewById(R.id.book_button);
-        bookButton.setOnClickListener(bookListener);
         bookButton.setEnabled(false);
     }
 
@@ -68,23 +67,6 @@ public class ReservationFragment extends Fragment {
 
             // Afficher le dialogue de sélection de la date
             datePickerDialog.show();
-    };
-
-    private final View.OnClickListener bookListener = v -> {
-        String date = dateEditText.getText().toString();
-        String nbGuests = guestsEditText.getText().toString();
-        // TODO: requête SQL
-
-        // Texte pop-up
-        // TODO: remplacer le champ nom restaurant
-        String textPopUp = getString(R.string.reservation_book_pop_up, "Grosse patate", date, nbGuests);
-
-        Intent intent = new Intent(v.getContext(), MainActivity.class);
-        intent.putExtra("pop_up_success", textPopUp);
-
-
-        // Redirection
-        startActivity(intent);
     };
 
     private final TextWatcher enableBookButton = new TextWatcher() {

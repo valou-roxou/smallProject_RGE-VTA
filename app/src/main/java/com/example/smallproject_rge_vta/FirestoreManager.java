@@ -3,6 +3,7 @@ package com.example.smallproject_rge_vta;
 import android.util.Log;
 
 import com.example.smallproject_rge_vta.dto.Feedback;
+import com.example.smallproject_rge_vta.dto.Reservation;
 import com.example.smallproject_rge_vta.dto.Restaurant;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -56,16 +57,16 @@ public class FirestoreManager {
                 });
 
         restaurant.addFeedback(feedbackId);
-        updateRestaurant(restaurant);
-    }
-
-    private static void updateRestaurant(Restaurant restaurant) {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        CollectionReference restaurantRef = database.collection("restaurant");
-        String restaurantId = restaurant.getId();
 
         Map<String, Object> updates = new HashMap<>();
         updates.put("feedbacks", restaurant.getFeedbacks());
+        updateRestaurant(restaurant, updates);
+    }
+
+    private static void updateRestaurant(Restaurant restaurant, Map<String, Object> updates) {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        CollectionReference restaurantRef = database.collection("restaurant");
+        String restaurantId = restaurant.getId();
 
         restaurantRef.document(restaurantId).update(updates)
                 .addOnSuccessListener(aVoid -> {
@@ -75,4 +76,27 @@ public class FirestoreManager {
                     Log.e(TAG, "Error updating restaurant", e);
                 });
     }
+
+
+    public static void postReservation(FirestoreCallback callback, Restaurant restaurant, String date, String nbGuests) {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        CollectionReference docRef = database.collection("reservation");
+        String reservationId = java.util.UUID.randomUUID().toString();
+        Reservation reservation = new Reservation(reservationId, date, Integer.parseInt(nbGuests), restaurant.getId());
+
+        docRef.document(reservationId).set(reservation)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Reservation added with ID: " + reservationId);
+                    callback.onCallback(null);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error adding reservation", e);
+                });
+
+        restaurant.addReservation(reservationId);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("reservations", restaurant.getFeedbacks());
+        updateRestaurant(restaurant, updates);
+    }
+
 }

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -85,7 +86,7 @@ public class RestaurantActivity extends AppCompatActivity {
         cameraResultLauncher.launch(new Intent(this, CameraActivity.class));
     }
 
-    public void onClickSavedAvis(View view) {
+    public void onClickSavedFeedback(View view) {
         TextView commentTextView = findViewById(R.id.comment_editText);
         String comment = commentTextView.getText().toString();
         FirestoreManager.postFeedback(data -> {
@@ -95,6 +96,23 @@ public class RestaurantActivity extends AppCompatActivity {
             intent.putExtra("pop_up_success", textPopUp);
             startActivity(intent);
         }, restaurant, comment);
+    }
+
+    public void onClickSavedReservation(View view) {
+        EditText dateEditText = findViewById(R.id.date_editText);
+        String date = dateEditText.getText().toString();
+
+        EditText nbGuestsEditText = findViewById(R.id.guests_editText);
+        String nbGuests = nbGuestsEditText.getText().toString();
+
+        FirestoreManager.postReservation(data -> {
+            String textPopUp = getString(R.string.reservation_book_pop_up, restaurant.getName(), date, nbGuests);
+
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            intent.putExtra("pop_up_success", textPopUp);
+
+            startActivity(intent);
+        }, restaurant, date, nbGuests);
     }
 
     private ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
