@@ -30,6 +30,7 @@
     <string name="feedback_saved_pop_up">Votre avis sur le restaurant \"%1$s\" est enregistré !</string>
     <string name="feedback_get_picture">Get picture</string>
 
+    <string name="feedback_map">GMap</string>
 
 
 </resources>
