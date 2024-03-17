@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Feedback {
     public String id;
-    public List<String> pictures;
+    List<String> pictures;
     public String restaurantId;
     public String text;
 
