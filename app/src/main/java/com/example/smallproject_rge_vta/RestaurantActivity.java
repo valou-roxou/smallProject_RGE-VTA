@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -26,8 +30,11 @@ import androidx.fragment.app.FragmentContainerView;
 import com.example.smallproject_rge_vta.fragments.ReservationFragment;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RestaurantActivity extends AppCompatActivity {
 
@@ -89,13 +96,25 @@ public class RestaurantActivity extends AppCompatActivity {
     public void onClickSavedFeedback(View view) {
         TextView commentTextView = findViewById(R.id.comment_editText);
         String comment = commentTextView.getText().toString();
+
+        ImageView image = findViewById(R.id.take_picture_picture);
+        List<String> imageData = new ArrayList<>();
+        if(image != null) {
+            Bitmap bitmap = getBitmapFromImage(image);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            byte[] data = baos.toByteArray();
+            String imageB64 = Base64.encodeToString(data, Base64.URL_SAFE);
+            imageData.add(imageB64);
+        }
+
         FirestoreManager.postFeedback(data -> {
             String textPopUp = getString(R.string.feedback_saved_pop_up, restaurant.getName());
 
             Intent intent = new Intent(view.getContext(), MainActivity.class);
             intent.putExtra("pop_up_success", textPopUp);
             startActivity(intent);
-        }, restaurant, comment);
+        }, restaurant, comment, imageData);
     }
 
     public void onClickSavedReservation(View view) {
@@ -113,6 +132,25 @@ public class RestaurantActivity extends AppCompatActivity {
 
             startActivity(intent);
         }, restaurant, date, nbGuests);
+    }
+
+    private Bitmap getBitmapFromImage(ImageView image) {
+        Drawable drawable = image.getDrawable();
+        Bitmap bitmap;
+
+        if (drawable instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            // If the drawable is not a BitmapDrawable, you may need to draw it onto a Bitmap
+            int width = drawable.getIntrinsicWidth();
+            int height = drawable.getIntrinsicHeight();
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+
+        return bitmap;
     }
 
     private ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
