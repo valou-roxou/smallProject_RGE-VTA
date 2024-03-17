@@ -35,12 +35,9 @@ import java.util.List;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private String cameraId;
     private CameraDevice cameraDevice;
-    private CameraCaptureSession cameraCaptureSession;
     private CaptureRequest.Builder captureRequestBuilder;
     private TextureView textureView;
-    private Button button;
     private Uri uri;
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -59,14 +56,14 @@ public class CameraActivity extends AppCompatActivity {
 
         textureView = findViewById(R.id.camera_texture_view);
 
-        button = findViewById(R.id.camera_button);
+        Button button = findViewById(R.id.camera_button);
         button.setOnClickListener(onClickListener);
 
         // Accéder aux fonctions caméra
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         try {
             // On récupère la première caméra disponible
-            cameraId = cameraManager.getCameraIdList()[0];
+            String cameraId = cameraManager.getCameraIdList()[0];
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(CameraActivity.this, new String[]{android.Manifest.permission.CAMERA}, 200);
                 return;
@@ -157,7 +154,6 @@ public class CameraActivity extends AppCompatActivity {
                         }
                     }
 
-                    // On ferme l'activité
                     stopCameraActivity();
                 }
             };
@@ -186,7 +182,7 @@ public class CameraActivity extends AppCompatActivity {
     public void stopCameraActivity() {
         // On passe le path de l'uri et ok pour le composant appellant
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("uri_path", uri.toString());
+        resultIntent.putExtra("uri_path_picture", uri.toString());
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
@@ -216,10 +212,9 @@ public class CameraActivity extends AppCompatActivity {
             if (cameraDevice == null) {
                 return;
             }
-            cameraCaptureSession = session;
             try {
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-                cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, null);
+                session.setRepeatingRequest(captureRequestBuilder.build(), null, null);
             } catch (CameraAccessException e) {
                 e.printStackTrace();
             }

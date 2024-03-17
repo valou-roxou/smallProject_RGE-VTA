@@ -2,6 +2,7 @@ package com.example.smallproject_rge_vta;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -25,6 +26,7 @@ import com.example.smallproject_rge_vta.dto.Restaurant;
 import com.example.smallproject_rge_vta.fragments.FeedbackFragment;
 import com.example.smallproject_rge_vta.fragments.SlideshowFragment;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.example.smallproject_rge_vta.fragments.ReservationFragment;
@@ -40,8 +42,6 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private ImageView imageView;
 
-    private TabLayout tabLayout;
-
     private FragmentContainerView fragmentContainerView;
 
     private Restaurant restaurant;
@@ -56,7 +56,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
         fragmentContainerView = findViewById(R.id.restaurant_fragment_container);
 
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.restaurant_tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
 
         // Get the data passed when clicked
@@ -65,7 +65,7 @@ public class RestaurantActivity extends AppCompatActivity {
             restaurant = (Restaurant) intent.getSerializableExtra("restaurant");
         }
 
-        // TODO: Implémenter le comportement des ongles "Menu" et "Avis"
+        // TODO: Implémenter le comportement des ongles "Menu"
         tabLayout.getTabAt(0).view.setClickable(false);
         tabLayout.getTabAt(1).select();
 
@@ -75,7 +75,6 @@ public class RestaurantActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
                 .replace(R.id.restaurant_slideshow_fragment_container, SlideshowFragment.class, bundle).commit();
-
     }
 
     public void startFragementReservation(View view) {
@@ -89,8 +88,18 @@ public class RestaurantActivity extends AppCompatActivity {
     }
 
     public void startCameraActivity (View view) {
-        imageView = findViewById(R.id.take_picture_picture);
-        cameraResultLauncher.launch(new Intent(this, CameraActivity.class));
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(RestaurantActivity.this, new String[]{android.Manifest.permission.CAMERA}, 200);
+        } else {
+            imageView = findViewById(R.id.take_picture_picture);
+            cameraResultLauncher.launch(new Intent(this, CameraActivity.class));
+        }
+    }
+
+    public void startPictureActivity(String uriPath) {
+        Intent intent = new Intent(this, PictureCustomizationActivity.class);
+        intent.putExtra("uri_path_picture", uriPath);
+        pictureResultLauncher.launch(intent);
     }
 
     public void onClickSavedFeedback(View view) {
@@ -159,26 +168,29 @@ public class RestaurantActivity extends AppCompatActivity {
                 // Si l'activité s'est bien terminé et qu'on a un résultat
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     Intent data = result.getData();
-                    String uriPath = data.getStringExtra("uri_path");
+                    String uriPath = data.getStringExtra("uri_path_picture");
                     // Si on a bien une uri
                     if(uriPath != null) {
-                        // On ouvre le contenu associé à l'URI
-                        try (InputStream inputStream = getContentResolver().openInputStream(Uri.parse(uriPath))){
-                            // Affichage de l'image si on a son contenu
-                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                            // Rotation à 90 de l'image
-                            Matrix matrix = new Matrix();
-                            matrix.postRotate(90);
-                            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-                            imageView.setImageBitmap(rotatedBitmap);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        startPictureActivity(uriPath);
                     }
                 }
             });
+
+
+    private final ActivityResultLauncher<Intent> pictureResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                // Si l'activité s'est bien terminé et qu'on a un résultat
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    String uriPath = data.getStringExtra("uri_path_custom_picture");
+                    // Si on a bien une uri
+                    if(uriPath != null) {
+                        imageView.setImageURI(Uri.parse(uriPath));
+                    }
+                }
+            });
+
 
     private final TabLayout.OnTabSelectedListener tabListener = new TabLayout.OnTabSelectedListener() {
             @Override
@@ -197,7 +209,6 @@ public class RestaurantActivity extends AppCompatActivity {
                     // Reservation
                     case 2:
                         startFragementReservation(fragmentContainerView);
-                        return;
                 }
             }
 

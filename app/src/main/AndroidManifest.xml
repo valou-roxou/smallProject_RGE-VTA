@@ -55,6 +55,12 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity
+            android:name=".PictureCustomizationActivity"
+            android:exported="false"
+            android:label="Picture"
+            android:parentActivityName=".CameraActivity"
+            android:theme="@style/Theme.SmallProject_RGEVTA" />
+        <activity
             android:name=".MapActivity"
             android:exported="false"
             android:parentActivityName=".PlaygroundActivity"

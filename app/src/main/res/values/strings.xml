@@ -13,6 +13,9 @@
     <string name="reservation_nbGuests">Nombre de convives</string>
     <string name="reservation_date">Date de la réservation</string>
 
+    <!-- PICTURE -->
+    <string name="picture_save_button">Valider</string>
+
     <!-- TAB RESTAURANT -->
     <string name="tab_menu">Menu</string>
     <string name="tab_feedback">Avis</string>
@@ -31,5 +34,14 @@
     <string name="feedback_get_picture">Get picture</string>
     <string name="feedback_map">GMap</string>
 
+
+    <!-- TAB CUSTOM PICTURE -->
+    <string name="tab_filter">Filtres</string>
+    <string name="tab_sticker">Stickers</string>
+
+    <!-- FRAGMENT FILTER -->
+    <string name="filter_no_filter">Sans filtre</string>
+    <string name="filter_1">Luminosité</string>
+    <string name="filter_2">Secoue !</string>
 
 </resources>
