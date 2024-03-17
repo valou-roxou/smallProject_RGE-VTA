@@ -28,7 +28,7 @@ public class PlaygroundActivity extends AppCompatActivity {
         startActivity(new Intent(this, CameraActivity.class));
     }
 
-    public void startMap(View view) {
+    public void startMapActivity(View view) {
         startActivity(new Intent(this, MapActivity.class));
     }
 }
