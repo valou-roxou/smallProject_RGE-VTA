@@ -28,7 +28,7 @@ public class PlaygroundActivity extends AppCompatActivity {
         startActivity(new Intent(this, CameraActivity.class));
     }
 
-    public void startGetPicture(View view) {
+    public void startGetPictureActivity(View view) {
         startActivity(new Intent(this, GetPictureActivity.class));
     }
 

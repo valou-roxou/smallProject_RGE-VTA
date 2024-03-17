@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="68dp"
-        android:onClick="startGetPicture"
+        android:onClick="startGetPictureActivity"
         android:text="@string/feedback_get_picture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.194"
