@@ -38,21 +38,11 @@ public class PictureActivity extends AppCompatActivity implements SensorEventLis
 
     private Sensor lightSensor;
 
+    private Sensor shakeSensor;
 
-    private final float[] desaturateMatrix = {
-            0.33f, 0.59f, 0.11f, 0, 0,  // Rouge
-            0.33f, 0.59f, 0.11f, 0, 0,  // Vert
-            0.33f, 0.59f, 0.11f, 0, 0,  // Bleu
-            0,     0,     0,     1, 0   // Alpha
-    };
+    private CustomMatrixEnum[] allMatrix;
 
-    private final float[] saturationMatrix = {
-            1.2f, 0, 0, 0, 0, // Rouge
-            0, 1.2f, 0, 0, 0, // Vert
-            0, 0, 1.2f, 0, 0, // Bleu
-            0, 0,  0  , 1, 0     // Alpha
-    };
-
+    private float[] actualMatrix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +53,15 @@ public class PictureActivity extends AppCompatActivity implements SensorEventLis
 
         TabLayout tabLayout = findViewById(R.id.picture_tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
-        tabLayout.getTabAt(0).select();
 
         imageView = findViewById(R.id.filter_picture_picture);
         imageView.setDrawingCacheEnabled(true);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        shakeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+
+        allMatrix = CustomMatrixEnum.values();
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -91,6 +83,8 @@ public class PictureActivity extends AppCompatActivity implements SensorEventLis
                 }
             }
         }
+
+        tabLayout.getTabAt(0).select();
     }
 
     public void startFragementFilters(View view) {
@@ -122,44 +116,53 @@ public class PictureActivity extends AppCompatActivity implements SensorEventLis
     }
 
     public void onClickFilter1(View view) {
+        sensorManager.unregisterListener(this);
         sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void onClickFilter2(View view) {
         sensorManager.unregisterListener(this);
-
-        // Negative filter
-        float[] negativeMatrix = {
-                -1, 0, 0, 0, 255, // Rouge
-                0, -1, 0, 0, 255, // Vert
-                0, 0, -1, 0, 255, // Bleu
-                0, 0, 0, 1, 0     // Alpha
-        };
-        ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.set(negativeMatrix);
-        ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-        imageView.getDrawable().setColorFilter(colorFilter);
+        actualMatrix = CustomMatrixEnum.POSITIVE.getFloatMatrix();
+        sensorManager.registerListener(this, shakeSensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
     public final void onSensorChanged(SensorEvent event) {
-        float lightning = event.values[0];
+        switch(event.sensor.getType()) {
+            case Sensor.TYPE_LIGHT:
+                float lightning = event.values[0]/1000f;
+                actualMatrix = interpolateMatrices(CustomMatrixEnum.DESATURATE.getFloatMatrix(), CustomMatrixEnum.SATURATE.getFloatMatrix(), lightning);
 
-        float[] matriceRes = interpolateMatrices(desaturateMatrix, saturationMatrix, lightning);
+                break;
+
+            case Sensor.TYPE_LINEAR_ACCELERATION:
+                float x = event.values[0];
+                float y = event.values[1];
+                float z = event.values[2];
+
+                float speed = calculateSpeed(x, y, z)/10;
+                if(speed >= 0.70f) {
+                    int randomNum = (int) (Math.random()*allMatrix.length);
+                    actualMatrix = allMatrix[randomNum].getFloatMatrix();
+                }
+        }
 
         ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.set(matriceRes);
+        colorMatrix.set(actualMatrix);
         ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
         imageView.getDrawable().setColorFilter(colorFilter);
     }
 
-    public static float[] interpolateMatrices(float[] matrix1, float[] matrix2, float y) {
+    private static float[] interpolateMatrices(float[] matrix1, float[] matrix2, float ratio) {
         float[] interpolatedMatrix = new float[matrix1.length];
-        float ratio = y / 1000f;
         for (int i = 0; i < matrix1.length; i++) {
             interpolatedMatrix[i] = matrix1[i] + (matrix2[i] - matrix1[i]) * ratio;
         }
         return interpolatedMatrix;
+    }
+
+    private float calculateSpeed(float x, float y, float z) {
+        return (float) Math.sqrt(x * x + y * y + z * z);
     }
 
     @Override
