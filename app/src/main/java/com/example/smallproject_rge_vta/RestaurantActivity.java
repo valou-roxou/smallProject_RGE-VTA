@@ -5,13 +5,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.smallproject_rge_vta.dto.Restaurant;
 import com.example.smallproject_rge_vta.fragments.FeedbackFragment;
 import com.example.smallproject_rge_vta.fragments.SlideshowFragment;
 
@@ -27,6 +31,8 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private FragmentContainerView fragmentContainerView;
 
+    private Restaurant restaurant;
+
     public RestaurantActivity() {
     }
 
@@ -39,6 +45,12 @@ public class RestaurantActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.restaurant_tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
+
+        // Get the data passed when clicked
+        Intent intent = getIntent();
+        if (intent != null) {
+            restaurant = (Restaurant) intent.getSerializableExtra("restaurant");
+        }
 
         // TODO: Implémenter le comportement des ongles "Menu"
         tabLayout.getTabAt(0).view.setClickable(false);
@@ -77,7 +89,36 @@ public class RestaurantActivity extends AppCompatActivity {
         pictureResultLauncher.launch(intent);
     }
 
-    private final ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
+    public void onClickSavedFeedback(View view) {
+        TextView commentTextView = findViewById(R.id.comment_editText);
+        String comment = commentTextView.getText().toString();
+        FirestoreManager.postFeedback(data -> {
+            String textPopUp = getString(R.string.feedback_saved_pop_up, restaurant.getName());
+
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            intent.putExtra("pop_up_success", textPopUp);
+            startActivity(intent);
+        }, restaurant, comment);
+    }
+
+    public void onClickSavedReservation(View view) {
+        EditText dateEditText = findViewById(R.id.date_editText);
+        String date = dateEditText.getText().toString();
+
+        EditText nbGuestsEditText = findViewById(R.id.guests_editText);
+        String nbGuests = nbGuestsEditText.getText().toString();
+
+        FirestoreManager.postReservation(data -> {
+            String textPopUp = getString(R.string.reservation_book_pop_up, restaurant.getName(), date, nbGuests);
+
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            intent.putExtra("pop_up_success", textPopUp);
+
+            startActivity(intent);
+        }, restaurant, date, nbGuests);
+    }
+
+    private ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 // Si l'activité s'est bien terminé et qu'on a un résultat

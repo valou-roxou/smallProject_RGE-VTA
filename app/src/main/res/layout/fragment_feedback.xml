@@ -44,6 +44,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="10dp"
         android:enabled="false"
+        android:onClick="onClickSavedFeedback"
         android:text="@string/feedback_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

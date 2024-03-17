@@ -27,4 +27,8 @@ public class PlaygroundActivity extends AppCompatActivity {
     public void startTakePicture(View view) {
         startActivity(new Intent(this, CameraActivity.class));
     }
+
+    public void startMapActivity(View view) {
+        startActivity(new Intent(this, MapActivity.class));
+    }
 }
