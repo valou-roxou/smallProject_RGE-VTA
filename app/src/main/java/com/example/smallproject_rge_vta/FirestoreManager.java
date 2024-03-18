@@ -47,6 +47,66 @@ public class FirestoreManager {
         });
     }
 
+    public static void getPicturesForRestaurant(FirestoreCallback callback, String restaurantId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference restaurantRef = db.collection("restaurant").document(restaurantId);
+
+        // Get the list of feedback IDs from the restaurant document
+        restaurantRef.get().addOnCompleteListener(restaurantTask -> {
+            if (restaurantTask.isSuccessful()) {
+                DocumentSnapshot restaurantDoc = restaurantTask.getResult();
+                if (restaurantDoc.exists()) {
+                    List<String> feedbackIds = (List<String>) restaurantDoc.get("feedbacks");
+                    if (feedbackIds != null) {
+                        for (String feedbackId : feedbackIds) {
+                            // Reference to the feedback document
+                            DocumentReference feedbackRef = db.collection("feedback").document(feedbackId);
+
+                            // Get the list of picture IDs from the feedback document
+                            feedbackRef.get().addOnCompleteListener(feedbackTask -> {
+                                if (feedbackTask.isSuccessful()) {
+                                    DocumentSnapshot feedbackDoc = feedbackTask.getResult();
+                                    if (feedbackDoc.exists()) {
+                                        List<String> pictureIds = (List<String>) feedbackDoc.get("pictures");
+                                        if (pictureIds != null) {
+                                            for (String pictureId : pictureIds) {
+                                                // Retrieve the picture document from the "pictures" collection
+                                                DocumentReference pictureDocRef = db.collection("picture").document(pictureId);
+                                                pictureDocRef.get().addOnCompleteListener(pictureTask -> {
+                                                    if (pictureTask.isSuccessful()) {
+                                                        DocumentSnapshot pictureDoc = pictureTask.getResult();
+                                                        if (pictureDoc.exists()) {
+                                                            // Picture document exists, you can retrieve the picture object
+                                                            Picture picture = pictureDoc.toObject(Picture.class);
+                                                            callback.onCallback(picture);
+                                                            // Create Picture object or do something with contentB64
+                                                        } else {
+                                                            Log.d("Firestore", "No such picture document");
+                                                        }
+                                                    } else {
+                                                        Log.d("Firestore", "Error getting picture document: ", pictureTask.getException());
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    } else {
+                                        Log.d("Firestore", "No such feedback document");
+                                    }
+                                } else {
+                                    Log.d("Firestore", "Error getting feedback document: ", feedbackTask.getException());
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    Log.d("Firestore", "No such restaurant document");
+                }
+            } else {
+                Log.d("Firestore", "Error getting restaurant document: ", restaurantTask.getException());
+            }
+        });
+    }
+
     public static void getPictureById(FirestoreCallback callback, String pictureId) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference docRef = database.collection("picture").document(pictureId);

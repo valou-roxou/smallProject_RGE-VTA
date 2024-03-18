@@ -1,13 +1,26 @@
 package com.example.smallproject_rge_vta;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import com.example.smallproject_rge_vta.dto.Picture;
+import com.example.smallproject_rge_vta.dto.Restaurant;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -38,11 +51,38 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions()
-                .position(sydney)
-                .title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng univ = new LatLng(43.562005, 1.469607);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(univ));
+
+        FirestoreManager.getRestaurants(data -> {
+            List<Restaurant> restaurants = (List<Restaurant>) data;
+
+            for(Restaurant restaurant: restaurants) {
+                LatLng pos = new LatLng(restaurant.getLat(), restaurant.getLng());
+                mMap.addMarker(new MarkerOptions()
+                        .position(pos)
+                        .title(restaurant.getId()));
+            }
+
+            mMap.setOnMarkerClickListener(markerListener);
+        });
     }
+
+    private final GoogleMap.OnMarkerClickListener markerListener = marker -> {
+        FirestoreManager.getPicturesForRestaurant(data -> {
+            Picture picture = (Picture) data;
+
+            byte[] compressedData = Base64.decode(picture.contentB64, Base64.URL_SAFE);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(compressedData, 0, compressedData.length);
+
+            ImageView img = new ImageView(this.getBaseContext());
+            img.setImageBitmap(bitmap);
+
+            LinearLayout hsv = findViewById(R.id.bottom_drawer).findViewById(R.id.map_horizontal_layout);
+            hsv.addView(img);
+        }, marker.getTitle());
+
+        return true;
+    };
 }
 
