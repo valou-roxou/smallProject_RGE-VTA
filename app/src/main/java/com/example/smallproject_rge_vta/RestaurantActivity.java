@@ -4,15 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,13 +32,12 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantActivity extends AppCompatActivity {
 
-    private ImageView imageView;
+    private FeedbackFragment feedbackFragment;
 
     private FragmentContainerView fragmentContainerView;
 
@@ -83,15 +80,15 @@ public class RestaurantActivity extends AppCompatActivity {
     }
 
     public void startFragementFeedback(View view) {
+        feedbackFragment = new FeedbackFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.restaurant_fragment_container, new FeedbackFragment()).commit();
+                .replace(R.id.restaurant_fragment_container, feedbackFragment).commit();
     }
 
     public void startCameraActivity (View view) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(RestaurantActivity.this, new String[]{android.Manifest.permission.CAMERA}, 200);
         } else {
-            imageView = findViewById(R.id.take_picture_picture);
             cameraResultLauncher.launch(new Intent(this, CameraActivity.class));
         }
     }
@@ -106,15 +103,17 @@ public class RestaurantActivity extends AppCompatActivity {
         TextView commentTextView = findViewById(R.id.comment_editText);
         String comment = commentTextView.getText().toString();
 
-        ImageView image = findViewById(R.id.take_picture_picture);
+        List<Drawable> images = feedbackFragment.getSlideshowFragment().getPictures();
         List<String> imageData = new ArrayList<>();
-        if(image != null) {
-            Bitmap bitmap = getBitmapFromImage(image);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-            byte[] data = baos.toByteArray();
-            String imageB64 = Base64.encodeToString(data, Base64.URL_SAFE);
-            imageData.add(imageB64);
+        if(images != null) {
+            for(Drawable image : images) {
+                Bitmap bitmap = ((BitmapDrawable) image).getBitmap();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                byte[] data = baos.toByteArray();
+                String imageB64 = Base64.encodeToString(data, Base64.URL_SAFE);
+                imageData.add(imageB64);
+            }
         }
 
         FirestoreManager.postFeedback(data -> {
@@ -186,7 +185,12 @@ public class RestaurantActivity extends AppCompatActivity {
                     String uriPath = data.getStringExtra("uri_path_custom_picture");
                     // Si on a bien une uri
                     if(uriPath != null) {
-                        imageView.setImageURI(Uri.parse(uriPath));
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(uriPath));
+                            feedbackFragment.getSlideshowFragment().addImage(bitmap);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             });

@@ -19,6 +19,8 @@ public class FeedbackFragment extends Fragment {
 
     private EditText comment;
 
+    private SlideshowFragment slideshowFragment;
+
     public FeedbackFragment() {
         super(R.layout.fragment_feedback);
     }
@@ -29,8 +31,13 @@ public class FeedbackFragment extends Fragment {
         comment.addTextChangedListener(enableSaveFeedback);
 
         saveButton = view.findViewById(R.id.save_button);
+
+        slideshowFragment = (SlideshowFragment) getChildFragmentManager().findFragmentById(R.id.feedback_slideshow_fragment_container);
     }
 
+    public SlideshowFragment getSlideshowFragment() {
+        return this.slideshowFragment;
+    }
 
     private final TextWatcher enableSaveFeedback = new TextWatcher() {
         @Override

@@ -1,5 +1,7 @@
 package com.example.smallproject_rge_vta.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -19,11 +21,11 @@ public class SlideshowFragment extends Fragment {
 
     private ConstraintLayout constraintLayout;
 
-    private List<Drawable> pictures;
+    private List<Drawable> pictures = new ArrayList<>();
 
     private int indexPicture;
 
-    private int sizePictures;
+    private int sizePictures = 0;
 
     public SlideshowFragment() {
         super(R.layout.fragment_slideshow);
@@ -40,37 +42,33 @@ public class SlideshowFragment extends Fragment {
 
         Button rightButton = view.findViewById(R.id.rightCustomButton);
         rightButton.setOnClickListener(nextPicture);
-
-        int idRestaurant = requireArguments().getInt("id_restaurant");
-        searchRestaurant(idRestaurant);
-
     }
 
-    private void searchRestaurant (int id) {
-        // --- TODO: requête base de données
-        ArrayList<Drawable> pictures = new ArrayList<>();
-        pictures.add(AppCompatResources.getDrawable(this.getContext(), R.drawable.restaurant_ui_ux));
-        pictures.add(AppCompatResources.getDrawable(this.getContext(), R.drawable.restaurant));
-        // ---
+    public void addImage(Bitmap bitmap) {
+        pictures.add(new BitmapDrawable(getResources(), bitmap));
+        constraintLayout.setBackground(pictures.get(sizePictures));
+        sizePictures++;
+    }
 
-        this.pictures = pictures;
-        indexPicture = 0;
-        sizePictures = this.pictures.size();
-
-        constraintLayout.setBackground(this.pictures.get(indexPicture));
+    public List<Drawable> getPictures() {
+        return this.pictures;
     }
 
     private final View.OnClickListener previousPicture = v -> {
-        if (--indexPicture < 0) {
-            indexPicture = sizePictures - 1;
+        if(sizePictures > 0) {
+            if (--indexPicture < 0) {
+                indexPicture = sizePictures - 1;
+            }
+            constraintLayout.setBackground(pictures.get(indexPicture));
         }
-        constraintLayout.setBackground(pictures.get(indexPicture));
     };
 
     private final View.OnClickListener nextPicture = v -> {
-        if (++indexPicture >= sizePictures) {
-            indexPicture = 0;
+        if(sizePictures > 0) {
+            if (++indexPicture >= sizePictures) {
+                indexPicture = 0;
+            }
+            constraintLayout.setBackground(pictures.get(indexPicture));
         }
-        constraintLayout.setBackground(pictures.get(indexPicture));
     };
 }
