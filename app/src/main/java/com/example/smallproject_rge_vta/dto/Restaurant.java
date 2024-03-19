@@ -11,16 +11,20 @@ public class Restaurant implements Serializable {
     private int location;
     private List<String> feedbacks;
     private List<String> reservations;
+    private double lat;
+    private double lng;
 
     public Restaurant() {}
 
-    public Restaurant(String id, String name, float stars, int location, List<String> feedbacks, List<String> reservations) {
+    public Restaurant(String id, String name, float stars, int location, List<String> feedbacks, List<String> reservations, double lat, double lng) {
         this.id = id;
         this.name = name;
         this.stars = stars;
         this.location = location;
         this.feedbacks = feedbacks;
         this.reservations = reservations;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public void setId(String id) {
@@ -77,5 +81,21 @@ public class Restaurant implements Serializable {
     public void addReservation(String reservationId) {
         if(reservations == null) reservations = new ArrayList<>();
         reservations.add(reservationId);
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

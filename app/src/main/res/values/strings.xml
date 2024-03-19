@@ -43,5 +43,6 @@
     <string name="filter_no_filter">Sans filtre</string>
     <string name="filter_1">Luminosité</string>
     <string name="filter_2">Secoue !</string>
+    <string name="pictures">Pictures</string>
 
 </resources>
