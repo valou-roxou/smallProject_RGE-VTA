@@ -103,13 +103,12 @@ public class RestaurantActivity extends AppCompatActivity {
         TextView commentTextView = findViewById(R.id.comment_editText);
         String comment = commentTextView.getText().toString();
 
-        List<Drawable> images = feedbackFragment.getSlideshowFragment().getPictures();
+        List<Bitmap> images = feedbackFragment.getSlideshowFragment().getPictures();
         List<String> imageData = new ArrayList<>();
         if(images != null) {
-            for(Drawable image : images) {
-                Bitmap bitmap = ((BitmapDrawable) image).getBitmap();
+            for(Bitmap image : images) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                image.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                 byte[] data = baos.toByteArray();
                 String imageB64 = Base64.encodeToString(data, Base64.URL_SAFE);
                 imageData.add(imageB64);

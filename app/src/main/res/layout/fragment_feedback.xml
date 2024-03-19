@@ -39,13 +39,13 @@
 
     <fragment
         android:id="@+id/feedback_slideshow_fragment_container"
+        android:name="com.example.smallproject_rge_vta.fragments.SlideshowFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:name="com.example.smallproject_rge_vta.fragments.SlideshowFragment"
         app:layout_constraintBottom_toTopOf="@id/save_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

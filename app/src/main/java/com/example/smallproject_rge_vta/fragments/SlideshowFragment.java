@@ -1,16 +1,12 @@
 package com.example.smallproject_rge_vta.fragments;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;import androidx.fragment.app.Fragment;
 
 import com.example.smallproject_rge_vta.R;
 
@@ -19,13 +15,13 @@ import java.util.List;
 
 public class SlideshowFragment extends Fragment {
 
-    private ConstraintLayout constraintLayout;
+    private List<Bitmap> pictures = new ArrayList<>();
 
-    private List<Drawable> pictures = new ArrayList<>();
-
-    private int indexPicture;
+    private int indexPicture = 0;
 
     private int sizePictures = 0;
+
+    private ImageView imageView;
 
     public SlideshowFragment() {
         super(R.layout.fragment_slideshow);
@@ -35,7 +31,7 @@ public class SlideshowFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        constraintLayout = view.findViewById(R.id.slideshow_constraint_layout);
+        imageView = view.findViewById(R.id.slideshow_picture);
 
         Button leftButton = view.findViewById(R.id.leftCustomButton);
         leftButton.setOnClickListener(previousPicture);
@@ -45,12 +41,12 @@ public class SlideshowFragment extends Fragment {
     }
 
     public void addImage(Bitmap bitmap) {
-        pictures.add(new BitmapDrawable(getResources(), bitmap));
-        constraintLayout.setBackground(pictures.get(sizePictures));
-        sizePictures++;
+        imageView.setImageBitmap(bitmap);
+        pictures.add(bitmap);
+        indexPicture = ++sizePictures;
     }
 
-    public List<Drawable> getPictures() {
+    public List<Bitmap> getPictures() {
         return this.pictures;
     }
 
@@ -59,7 +55,7 @@ public class SlideshowFragment extends Fragment {
             if (--indexPicture < 0) {
                 indexPicture = sizePictures - 1;
             }
-            constraintLayout.setBackground(pictures.get(indexPicture));
+            imageView.setImageBitmap(pictures.get(indexPicture));
         }
     };
 
@@ -68,7 +64,7 @@ public class SlideshowFragment extends Fragment {
             if (++indexPicture >= sizePictures) {
                 indexPicture = 0;
             }
-            constraintLayout.setBackground(pictures.get(indexPicture));
+            imageView.setImageBitmap(pictures.get(indexPicture));
         }
     };
 }
