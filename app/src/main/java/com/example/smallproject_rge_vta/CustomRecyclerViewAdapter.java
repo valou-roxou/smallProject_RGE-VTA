@@ -52,7 +52,6 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantVi
 
         holder.restaurantNameView.setText(restaurant.getName());
         holder.setRestaurantStarsBar(restaurant.getStars());
-        holder.restaurantLocationView.setText(""+restaurant.getLocation());
 
         FirestoreManager.getPictureById(data -> {
             Picture picture = (Picture) data;

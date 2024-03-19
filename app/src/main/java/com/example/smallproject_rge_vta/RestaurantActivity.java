@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.smallproject_rge_vta.dto.Picture;
 import com.example.smallproject_rge_vta.dto.Restaurant;
 import com.example.smallproject_rge_vta.fragments.FeedbackFragment;
 
@@ -41,7 +43,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private FragmentContainerView fragmentContainerView;
 
-    private SlideshowFragment slideshowFragment;
+    private ImageView imageView;
 
     private Restaurant restaurant;
 
@@ -59,10 +61,10 @@ public class RestaurantActivity extends AppCompatActivity {
 
         nameView = findViewById(R.id.name_view);
 
+        imageView = findViewById(R.id.restaurant_picture);
+
         TabLayout tabLayout = findViewById(R.id.restaurant_tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
-
-        SlideshowFragment slideshowFragment = (SlideshowFragment) getSupportFragmentManager().findFragmentById(R.id.restaurant_slideshow_fragment_container);
 
         // Get the data passed when clicked
         Intent intent = getIntent();
@@ -70,6 +72,12 @@ public class RestaurantActivity extends AppCompatActivity {
             restaurant = (Restaurant) intent.getSerializableExtra("restaurant");
             if(restaurant != null) {
                 nameView.setText(restaurant.getName());
+                FirestoreManager.getPictureById(data -> {
+                    Picture picture = (Picture) data;
+                    byte[] compressedData = Base64.decode(picture.contentB64, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(compressedData, 0, compressedData.length);
+                    imageView.setImageBitmap(bitmap);
+                }, restaurant.getDefaultPicture());
             }
         }
 
