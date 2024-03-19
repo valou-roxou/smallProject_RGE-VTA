@@ -210,7 +210,7 @@ public class FirestoreManager {
 
         restaurant.addReservation(reservationId);
         Map<String, Object> updates = new HashMap<>();
-        updates.put("reservations", restaurant.getFeedbacks());
+        updates.put("reservations", restaurant.getReservations());
         updateRestaurant(restaurant, updates);
     }
 
