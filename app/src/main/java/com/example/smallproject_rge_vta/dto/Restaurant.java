@@ -11,6 +11,7 @@ public class Restaurant implements Serializable {
     private int location;
     private List<String> feedbacks;
     private List<String> reservations;
+    private String defaultPicture;
     private double lat;
     private double lng;
 
@@ -98,4 +99,13 @@ public class Restaurant implements Serializable {
     public void setLng(double lng) {
         this.lng = lng;
     }
+
+    public String getDefaultPicture() {
+        return defaultPicture;
+    }
+
+    public void setDefaultPicture(String defaultPicture) {
+        this.defaultPicture = defaultPicture;
+    }
+
 }

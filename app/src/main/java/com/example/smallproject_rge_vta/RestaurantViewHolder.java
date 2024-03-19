@@ -12,7 +12,6 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
     public ImageView pictureView;
     public TextView restaurantNameView;
-    public TextView restaurantLocationView;
     private TextView restaurantStarsView;
     private RatingBar restaurantStarsBar;
 
@@ -21,7 +20,6 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
         this.pictureView = (ImageView) itemView.findViewById(R.id.picture_view);
         this.restaurantNameView = (TextView) itemView.findViewById(R.id.restaurant_name_view);
-        this.restaurantLocationView = (TextView) itemView.findViewById(R.id.restaurant_location_view);
         this.restaurantStarsView = (TextView) itemView.findViewById(R.id.restaurant_stars_view);
         this.restaurantStarsBar = (RatingBar) itemView.findViewById(R.id.restaurant_stars_bar);
     }

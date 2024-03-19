@@ -1,14 +1,12 @@
 package com.example.smallproject_rge_vta.fragments;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;import androidx.fragment.app.Fragment;
 
 import com.example.smallproject_rge_vta.R;
 
@@ -17,13 +15,13 @@ import java.util.List;
 
 public class SlideshowFragment extends Fragment {
 
-    private ConstraintLayout constraintLayout;
+    private List<Bitmap> pictures = new ArrayList<>();
 
-    private List<Drawable> pictures;
+    private int indexPicture = 0;
 
-    private int indexPicture;
+    private int sizePictures = 0;
 
-    private int sizePictures;
+    private ImageView imageView;
 
     public SlideshowFragment() {
         super(R.layout.fragment_slideshow);
@@ -33,44 +31,40 @@ public class SlideshowFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        constraintLayout = view.findViewById(R.id.slideshow_constraint_layout);
+        imageView = view.findViewById(R.id.slideshow_picture);
 
         Button leftButton = view.findViewById(R.id.leftCustomButton);
         leftButton.setOnClickListener(previousPicture);
 
         Button rightButton = view.findViewById(R.id.rightCustomButton);
         rightButton.setOnClickListener(nextPicture);
-
-        int idRestaurant = requireArguments().getInt("id_restaurant");
-        searchRestaurant(idRestaurant);
-
     }
 
-    private void searchRestaurant (int id) {
-        // --- TODO: requête base de données
-        ArrayList<Drawable> pictures = new ArrayList<>();
-        pictures.add(AppCompatResources.getDrawable(this.getContext(), R.drawable.restaurant_ui_ux));
-        pictures.add(AppCompatResources.getDrawable(this.getContext(), R.drawable.restaurant));
-        // ---
+    public void addImage(Bitmap bitmap) {
+        imageView.setImageBitmap(bitmap);
+        pictures.add(bitmap);
+        indexPicture = ++sizePictures;
+    }
 
-        this.pictures = pictures;
-        indexPicture = 0;
-        sizePictures = this.pictures.size();
-
-        constraintLayout.setBackground(this.pictures.get(indexPicture));
+    public List<Bitmap> getPictures() {
+        return this.pictures;
     }
 
     private final View.OnClickListener previousPicture = v -> {
-        if (--indexPicture < 0) {
-            indexPicture = sizePictures - 1;
+        if(sizePictures > 0) {
+            if (--indexPicture < 0) {
+                indexPicture = sizePictures - 1;
+            }
+            imageView.setImageBitmap(pictures.get(indexPicture));
         }
-        constraintLayout.setBackground(pictures.get(indexPicture));
     };
 
     private final View.OnClickListener nextPicture = v -> {
-        if (++indexPicture >= sizePictures) {
-            indexPicture = 0;
+        if(sizePictures > 0) {
+            if (++indexPicture >= sizePictures) {
+                indexPicture = 0;
+            }
+            imageView.setImageBitmap(pictures.get(indexPicture));
         }
-        constraintLayout.setBackground(pictures.get(indexPicture));
     };
 }

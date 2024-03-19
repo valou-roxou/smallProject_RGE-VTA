@@ -65,6 +65,51 @@
                 android:layout_marginBottom="10dp"
                 android:onClick="addSticker"
                 app:srcCompat="@drawable/sandwiche_sticker" />
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:onClick="addSticker"
+                app:srcCompat="@drawable/croissant_sticker" />
+
+            <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:onClick="addSticker"
+                app:srcCompat="@drawable/sushi_sticker" />
+
+            <ImageView
+                android:id="@+id/imageView11"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:onClick="addSticker"
+                app:srcCompat="@drawable/beer_sticker" />
+
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:onClick="addSticker"
+                app:srcCompat="@drawable/cosmopolitan_sticker" />
+
         </LinearLayout>
     </HorizontalScrollView>
 
