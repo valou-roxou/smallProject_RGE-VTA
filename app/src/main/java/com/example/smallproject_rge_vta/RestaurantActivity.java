@@ -22,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smallproject_rge_vta.dto.Restaurant;
 import com.example.smallproject_rge_vta.fragments.FeedbackFragment;
-import com.example.smallproject_rge_vta.fragments.SlideshowFragment;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentContainerView;
@@ -69,9 +68,6 @@ public class RestaurantActivity extends AppCompatActivity {
         // Slideshow
         Bundle bundle = new Bundle();
         bundle.putInt("id_restaurant", 0);
-
-        getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
-                .replace(R.id.restaurant_slideshow_fragment_container, SlideshowFragment.class, bundle).commit();
     }
 
     public void startFragementReservation(View view) {

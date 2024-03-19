@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/restaurant_slideshow_fragment_container"
+        android:name="com.example.smallproject_rge_vta.fragments.SlideshowFragment"
         android:layout_width="0dp"
         android:layout_height="200dp"
         app:layout_constraintEnd_toEndOf="parent"

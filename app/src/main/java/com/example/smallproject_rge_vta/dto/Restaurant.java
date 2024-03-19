@@ -11,6 +11,7 @@ public class Restaurant implements Serializable {
     private int location;
     private List<String> feedbacks;
     private List<String> reservations;
+    private String defaultPicture;
 
     public Restaurant() {}
 
@@ -78,4 +79,13 @@ public class Restaurant implements Serializable {
         if(reservations == null) reservations = new ArrayList<>();
         reservations.add(reservationId);
     }
+
+    public String getDefaultPicture() {
+        return defaultPicture;
+    }
+
+    public void setDefaultPicture(String defaultPicture) {
+        this.defaultPicture = defaultPicture;
+    }
+
 }

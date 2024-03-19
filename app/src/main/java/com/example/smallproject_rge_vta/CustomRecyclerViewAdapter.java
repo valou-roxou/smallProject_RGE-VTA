@@ -2,6 +2,9 @@ package com.example.smallproject_rge_vta;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +12,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smallproject_rge_vta.dto.Picture;
 import com.example.smallproject_rge_vta.dto.Restaurant;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantViewHolder> {
@@ -50,6 +53,13 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantVi
         holder.restaurantNameView.setText(restaurant.getName());
         holder.setRestaurantStarsBar(restaurant.getStars());
         holder.restaurantLocationView.setText(""+restaurant.getLocation());
+
+        FirestoreManager.getPictureById(data -> {
+            Picture picture = (Picture) data;
+            byte[] compressedData = Base64.decode(picture.contentB64, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(compressedData, 0, compressedData.length);
+            holder.pictureView.setImageBitmap(bitmap);
+        }, restaurant.getDefaultPicture());
     }
 
     @Override
