@@ -27,6 +27,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.example.smallproject_rge_vta.fragments.ReservationFragment;
+import com.example.smallproject_rge_vta.fragments.SlideshowFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.ByteArrayOutputStream;
@@ -40,7 +41,11 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private FragmentContainerView fragmentContainerView;
 
+    private SlideshowFragment slideshowFragment;
+
     private Restaurant restaurant;
+
+    private TextView nameView;
 
     public RestaurantActivity() {
     }
@@ -52,22 +57,24 @@ public class RestaurantActivity extends AppCompatActivity {
 
         fragmentContainerView = findViewById(R.id.restaurant_fragment_container);
 
+        nameView = findViewById(R.id.name_view);
+
         TabLayout tabLayout = findViewById(R.id.restaurant_tab_layout);
         tabLayout.addOnTabSelectedListener(tabListener);
+
+        SlideshowFragment slideshowFragment = (SlideshowFragment) getSupportFragmentManager().findFragmentById(R.id.restaurant_slideshow_fragment_container);
 
         // Get the data passed when clicked
         Intent intent = getIntent();
         if (intent != null) {
             restaurant = (Restaurant) intent.getSerializableExtra("restaurant");
+            if(restaurant != null) {
+                nameView.setText(restaurant.getName());
+            }
         }
 
-        // TODO: Implémenter le comportement des ongles "Menu"
-        tabLayout.getTabAt(0).view.setClickable(false);
-        tabLayout.getTabAt(1).select();
-
-        // Slideshow
-        Bundle bundle = new Bundle();
-        bundle.putInt("id_restaurant", 0);
+        tabLayout.getTabAt(0).select();
+        startFragementFeedback(this.getCurrentFocus());
     }
 
     public void startFragementReservation(View view) {
@@ -196,17 +203,13 @@ public class RestaurantActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()){
 
-                    // Menu
-                    case 0:
-                        return;
-
                     // Avis
-                    case 1:
+                    case 0:
                         startFragementFeedback(fragmentContainerView);
                         return;
 
                     // Reservation
-                    case 2:
+                    case 1:
                         startFragementReservation(fragmentContainerView);
                 }
             }
