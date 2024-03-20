@@ -16,6 +16,10 @@
     <!-- PICTURE -->
     <string name="picture_save_button">Valider</string>
 
+    <!-- TAB MAIN -->
+    <string name="tab_list">Liste</string>
+    <string name="tab_map">Carte</string>
+
     <!-- TAB RESTAURANT -->
     <string name="tab_menu">Menu</string>
     <string name="tab_feedback">Avis</string>

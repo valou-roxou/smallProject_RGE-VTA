@@ -29,7 +29,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.example.smallproject_rge_vta.fragments.ReservationFragment;
-import com.example.smallproject_rge_vta.fragments.SlideshowFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.ByteArrayOutputStream;
