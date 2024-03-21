@@ -35,14 +35,14 @@ public class FirestoreManager {
             if (task.isSuccessful()) {
                 List<Restaurant> restaurants = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    Log.d(TAG, document.getId() + " => " + document.getData());
+                    // Log.d(TAG, document.getId() + " => " + document.getData());
                     Restaurant restaurant = document.toObject(Restaurant.class);
                     restaurant.setId(document.getId());
                     restaurants.add(restaurant);
                 }
                 callback.onCallback(restaurants);
             } else {
-                Log.d(TAG, "Error getting documents: ", task.getException());
+                // Log.d(TAG, "Error getting documents: ", task.getException());
             }
         });
     }
@@ -81,28 +81,28 @@ public class FirestoreManager {
                                                             callback.onCallback(picture);
                                                             // Create Picture object or do something with contentB64
                                                         } else {
-                                                            Log.d("Firestore", "No such picture document");
+                                                            // Log.d("Firestore", "No such picture document");
                                                         }
                                                     } else {
-                                                        Log.d("Firestore", "Error getting picture document: ", pictureTask.getException());
+                                                        // Log.d("Firestore", "Error getting picture document: ", pictureTask.getException());
                                                     }
                                                 });
                                             }
                                         }
                                     } else {
-                                        Log.d("Firestore", "No such feedback document");
+                                        // Log.d("Firestore", "No such feedback document");
                                     }
                                 } else {
-                                    Log.d("Firestore", "Error getting feedback document: ", feedbackTask.getException());
+                                    // Log.d("Firestore", "Error getting feedback document: ", feedbackTask.getException());
                                 }
                             });
                         }
                     }
                 } else {
-                    Log.d("Firestore", "No such restaurant document");
+                    // Log.d("Firestore", "No such restaurant document");
                 }
             } else {
-                Log.d("Firestore", "Error getting restaurant document: ", restaurantTask.getException());
+                // Log.d("Firestore", "Error getting restaurant document: ", restaurantTask.getException());
             }
         });
     }
@@ -116,18 +116,18 @@ public class FirestoreManager {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    // Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                     Picture picture = document.toObject(Picture.class);
                     assert picture != null;
 
                     picture.setId(document.getId());
                     callback.onCallback(picture);
                 } else {
-                    Log.d(TAG, "No such document");
+                    // Log.d(TAG, "No such document");
                     callback.onCallback(null);
                 }
             } else {
-                Log.d(TAG, "Error getting documents: ", task.getException());
+                // Log.d(TAG, "Error getting documents: ", task.getException());
             }
         });
     }
@@ -142,7 +142,7 @@ public class FirestoreManager {
 
         docRef.document(feedbackId).set(feedback)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "Feedback added with ID: " + feedbackId);
+                    // Log.d(TAG, "Feedback added with ID: " + feedbackId);
                     callback.onCallback(null);
                 })
                 .addOnFailureListener(e -> {
@@ -168,7 +168,7 @@ public class FirestoreManager {
 
             docRef.document(pictureId).set(picture)
                     .addOnSuccessListener(aVoid -> {
-                        Log.d(TAG, "Feedback added with ID: " + pictureId);
+                        // Log.d(TAG, "Feedback added with ID: " + pictureId);
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Error adding feedback", e);
@@ -185,7 +185,7 @@ public class FirestoreManager {
 
         restaurantRef.document(restaurantId).update(updates)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "Restaurant updated successfully");
+                    // Log.d(TAG, "Restaurant updated successfully");
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error updating restaurant", e);
@@ -201,7 +201,7 @@ public class FirestoreManager {
 
         docRef.document(reservationId).set(reservation)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "Reservation added with ID: " + reservationId);
+                    // Log.d(TAG, "Reservation added with ID: " + reservationId);
                     callback.onCallback(null);
                 })
                 .addOnFailureListener(e -> {

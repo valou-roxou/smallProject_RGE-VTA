@@ -59,7 +59,6 @@ public class PictureCustomizationActivity extends AppCompatActivity implements S
         tabLayout.addOnTabSelectedListener(tabListener);
         tabLayout.getTabAt(0).select();
 
-        // TODO: pk ça s'actualise pas seul comme dans RestaurantActivity ?????? >:(
         startFragementFilters(fragmentContainerView);
 
         imageView = findViewById(R.id.filter_picture_picture);
