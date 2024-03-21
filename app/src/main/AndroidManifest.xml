@@ -35,17 +35,19 @@
         <activity
             android:name=".RestaurantActivity"
             android:exported="false"
-            android:label="@string/title_activity_consult_restaurant"
+            android:label=""
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity
             android:name=".CameraActivity"
             android:exported="false"
+            android:label=""
             android:parentActivityName=".PlaygroundActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity
             android:name=".GetPictureActivity"
             android:exported="false"
+            android:label=""
             android:parentActivityName=".PlaygroundActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity
@@ -57,12 +59,13 @@
         <activity
             android:name=".PictureCustomizationActivity"
             android:exported="false"
-            android:label="Picture"
+            android:label=""
             android:parentActivityName=".CameraActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity
             android:name=".MapActivity"
             android:exported="false"
+            android:label=""
             android:parentActivityName=".PlaygroundActivity"
             android:theme="@style/Theme.SmallProject_RGEVTA" />
         <activity

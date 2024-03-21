@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smallproject_rge_vta.dto.Picture;
@@ -46,8 +47,6 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private Restaurant restaurant;
 
-    private TextView nameView;
-
     public RestaurantActivity() {
     }
 
@@ -58,7 +57,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
         fragmentContainerView = findViewById(R.id.restaurant_fragment_container);
 
-        nameView = findViewById(R.id.name_view);
+        TextView nameView = findViewById(R.id.name_view);
 
         imageView = findViewById(R.id.restaurant_picture);
 
@@ -151,26 +150,17 @@ public class RestaurantActivity extends AppCompatActivity {
         }, restaurant, date, nbGuests);
     }
 
-    private Bitmap getBitmapFromImage(ImageView image) {
-        Drawable drawable = image.getDrawable();
-        Bitmap bitmap;
-
-        if (drawable instanceof BitmapDrawable) {
-            bitmap = ((BitmapDrawable) drawable).getBitmap();
-        } else {
-            // If the drawable is not a BitmapDrawable, you may need to draw it onto a Bitmap
-            int width = drawable.getIntrinsicWidth();
-            int height = drawable.getIntrinsicHeight();
-            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 200) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                cameraResultLauncher.launch(new Intent(this, CameraActivity.class));
+            }
         }
-
-        return bitmap;
     }
 
-    private ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 // Si l'activité s'est bien terminé et qu'on a un résultat
